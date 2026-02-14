@@ -32,34 +32,11 @@ st.set_page_config(
 
 def show_integrated_auth():
     """Gated high-end Authentication & Authorization Center"""
-    st.markdown("""
-    <style>
-        [data-testid="stSidebarNav"] {display: none;}
-        .stApp {
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFEDED 100%);
-        }
-        .auth-master-card {
-            background: white;
-            padding: 50px;
-            border-radius: 40px;
-            box-shadow: 0 50px 100px rgba(234, 70, 67, 0.1);
-            border: 1px solid #FFD6D6;
-            text-align: center;
-            max-width: 650px;
-            margin: 50px auto;
-        }
-        .stTabs [data-baseweb="tab-list"] { gap: 30px; border-bottom: 2px solid #FFEDED; }
-        .stTabs [data-baseweb="tab"] { font-weight: 800; color: #718096; }
-        .stTabs [aria-selected="true"] { color: #EA4643 !important; }
-    </style>
-    """, unsafe_allow_html=True)
-
     c1, mid, c2 = st.columns([1, 4, 1])
     with mid:
-        st.markdown('<div class="auth-master-card">', unsafe_allow_html=True)
         st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=200)
-        st.markdown("<h1 style='color:#1A202C; font-weight:900; font-size:42px;'>BizSight AI</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='color:#718096; font-size:18px; margin-bottom:40px;'>Strategic Business Intelligence Gateway</p>", unsafe_allow_html=True)
+        st.markdown("<h1 style='color:#1A202C; font-weight:900; font-size:42px; text-align:center;'>BizSight AI</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#718096; font-size:18px; margin-bottom:40px; text-align:center;'>Strategic Business Intelligence Gateway</p>", unsafe_allow_html=True)
 
         tab_l, tab_r = st.tabs(["🔒 SECURE LOGIN", "📝 ENTERPRISE REGISTRATION"])
 
@@ -100,7 +77,6 @@ def show_integrated_auth():
                     else:
                         st.warning("⚠️ Critical security fields missing.")
         
-        st.markdown('</div>', unsafe_allow_html=True)
         st.caption("© 2026 BizSight AI | Part of the Global Enterprise Network")
 
 # AUTHENTICATION GATING
@@ -196,96 +172,6 @@ elif selected_module == "Dashboard":
 # ============================================================
 st.markdown("""
 <style>
-    /* Main Header - from first code */
-    .main-header {
-        font-size: 2.8rem;
-        font-weight: 800;
-        color: #1E3A8A;
-        margin-bottom: 0.5rem;
-        text-align: center;
-    }
-    
-    /* Main Header - from second code */
-    .main-header-v2 {
-        font-size: 3rem;
-        font-weight: 800;
-        color: #1E3A8A;
-        margin-bottom: 0.5rem;
-        text-align: center;
-        background: linear-gradient(90deg, #1E3A8A 0%, #3B82F6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    /* Sub Header - from second code */
-    .sub-header {
-        text-align: center;
-        font-size: 1.2rem;
-        color: #6B7280;
-        margin-bottom: 2rem;
-    }
-    
-    /* Welcome Message - from second code */
-    .welcome-message {
-        text-align: center;
-        padding: 3rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
-        margin: 2rem 0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    
-    .welcome-message h2 {
-        color: white;
-        margin-bottom: 1rem;
-        font-size: 2.5rem;
-    }
-    
-    /* Portfolio Link - from first code */
-    .portfolio-link {
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-    
-    .portfolio-link a {
-        color: #3B82F6;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        border: 2px solid #3B82F6;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-    }
-    
-    .portfolio-link a:hover {
-        background: #3B82F6;
-        color: white;
-        text-decoration: none;
-    }
-    
-    /* Portfolio Link - from second code */
-    .portfolio-link-v2 a {
-        color: #3B82F6;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        padding: 0.5rem 1.5rem;
-        border: 2px solid #3B82F6;
-        border-radius: 25px;
-        transition: all 0.3s ease;
-        display: inline-block;
-        margin: 0.5rem;
-    }
-    
-    .portfolio-link-v2 a:hover {
-        background: #3B82F6;
-        color: white;
-        text-decoration: none;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
-    }
     
     /* Section Headers - from first code */
     .section-header {
@@ -694,27 +580,7 @@ def align_schema(df):
 # ============================================================
 # SIDEBAR - COMBINED FROM BOTH CODES
 # ============================================================
-# Add Infosys logo from first code
-st.sidebar.markdown("""
-<div style='text-align: center; margin-bottom: 1rem;'>
-    <img src='https://imgs.search.brave.com/hRRODIPyRrFGigKCvwNHXaijoLJ3bGB0NcAG49yS-0A/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/dHlwLnVzL2ZpbGUv/aW5mb3N5cy5zdmc' 
-         alt='Infosys Logo' style='width: 80%; max-width: 200px; height: auto; border-radius: 8px;'>
-</div>
-""", unsafe_allow_html=True)
-
-st.sidebar.markdown("""
-<div style='text-align: center; margin-bottom: 1.5rem;'>
-    <h2 style='color: #1E3A8A; font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;'>BizSight AI</h2>
-    <p style='color: #6B7280; font-size: 0.9rem; font-weight: 500;'>Advanced Business Intelligence</p>
-</div>
-""", unsafe_allow_html=True)
-
-# Portfolio link from first code
-st.sidebar.markdown("""
-<div class='portfolio-link'>
-    <a href='https://sourishdeyportfolio.vercel.app/' target='_blank'>👨‍💻 View Portfolio</a>
-</div>
-""", unsafe_allow_html=True)
+# Sidebar branding removed as per request to eliminate redundant 'blank' or 'duplicate' sections.
 
 st.sidebar.markdown("### Data Upload")
 uploaded_file = st.sidebar.file_uploader(
