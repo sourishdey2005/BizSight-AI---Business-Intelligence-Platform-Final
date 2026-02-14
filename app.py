@@ -33,25 +33,11 @@ st.set_page_config(
 # ============================================================
 
 if 'user' not in st.session_state or st.session_state.user is None:
-    # 1. Try to get token from URL hash (if still coming from portal)
     try:
-        access_token = st.query_params.get("access_token")
-        refresh_token = st.query_params.get("refresh_token")
-        if access_token:
-            database.supabase.auth.set_session(access_token, refresh_token)
-            
-        session_response = database.supabase.auth.get_session()
-        if session_response and hasattr(session_response, 'user') and session_response.user:
-            user_data = session_response.user
-            st.session_state.user = {
-                "id": user_data.id,
-                "username": user_data.email,
-                "email": user_data.email,
-                "role": user_data.user_metadata.get('role', 'Owner') if user_data.user_metadata else 'Owner'
-            }
-            st.rerun()
-            
-        # 2. Show Native Streamlit Login/Register UI
+        # FORCE LOGIN: Skip automatic session checks from URL or localStorage
+        # This ensures they have to enter credentials every time the app is loaded fresh
+        
+        # 1. Show Native Streamlit Login/Register UI
         st.markdown("""
         <style>
             .stApp { background: #FFFFFF; }
