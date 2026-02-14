@@ -108,7 +108,7 @@ User Registration/Login (index.html)
          ↓
 Supabase Auth Creates Session
          ↓
-Redirect to Streamlit Dashboard (localhost:8501)
+Redirect to Streamlit Dashboard (Live URL)
          ↓
 User Adds Transactions/Inventory
          ↓

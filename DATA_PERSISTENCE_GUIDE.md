@@ -31,7 +31,7 @@ User Logs In (index.html)
     ↓
 Supabase Auth Creates Session
     ↓
-User Redirected to Streamlit (localhost:8501)
+User Redirected to Streamlit (Live URL)
     ↓
 Streamlit Reads User ID from Supabase Session
     ↓
