@@ -113,22 +113,14 @@ database.init_db()
 # Main Navigation
 with st.sidebar:
     # 1. Primary Logout at the very top
-    if st.button("🚪 LOGOUT & EXIT", type="primary", use_container_width=True, help="Securely sign out and return to the main portal"):
+    if st.button("🚪 LOGOUT", type="primary", use_container_width=True, help="Terminate session and return to login gate"):
         try:
             database.supabase.auth.sign_out()
         except:
             pass
         st.session_state.clear()
         st.query_params.clear()
-        
-        # Hard redirect for Streamlit Cloud compatibility
-        st.markdown(f"""
-            <meta http-equiv="refresh" content="0; url={config.LOGIN_PORTAL_URL}">
-            <script type="text/javascript">
-                window.top.location.href = "{config.LOGIN_PORTAL_URL}";
-            </script>
-        """, unsafe_allow_html=True)
-        st.stop()
+        st.rerun()
 
     st.markdown("---")
     st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=120)
@@ -151,6 +143,12 @@ with st.sidebar:
         options = ["Dashboard", "Transaction Management", "Inventory Management"]
         
     selected_module = st.radio("Go to:", options)
+
+    st.markdown("---")
+    if st.button("🔓 End Session", type="secondary", use_container_width=True):
+        st.session_state.clear()
+        st.query_params.clear()
+        st.rerun()
 
 # Routing Logic
 # Routing Logic
@@ -183,11 +181,10 @@ elif selected_module == "Dashboard":
             st.metric("Inventory Alerts", "2", delta="Low Stock", delta_color="inverse")
         
         st.markdown("---")
-        if st.button("🚪 Logout from Terminal", type="secondary"):
+        if st.button("🚪 Terminal Logout", type="secondary"):
             st.session_state.clear()
             st.query_params.clear()
-            st.markdown(f'<script>window.top.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
-            st.stop()
+            st.rerun()
         st.stop()
 
 # Logic to handle "Data Loading" for the remaining modules (Dashboard, Advanced Analytics)
@@ -1131,6 +1128,14 @@ if data_loaded:
 
     if show_advanced_analytics:
         st.title("🚀 Advanced Analytics Suite")
+        
+        c1, c2 = st.columns([5, 1])
+        with c2:
+            if st.button("🚪 Logout Now", key="adv_logout", use_container_width=True):
+                st.session_state.clear()
+                st.query_params.clear()
+                st.rerun()
+
         visualizations.show_advanced_visualizations(df)
         visualizations.show_geographic_and_premium_analytics(df)
         visualizations.show_3d_and_immersive_analytics(df)
@@ -1142,11 +1147,10 @@ if data_loaded:
     with header_col1:
         st.markdown("<h2 class='section-header'>Executive Dashboard</h2>", unsafe_allow_html=True)
     with header_col2:
-        if st.button("🚪 Exit System", type="secondary", use_container_width=True):
+        if st.button("🚪 Logout", type="secondary", use_container_width=True):
             st.session_state.clear()
             st.query_params.clear()
-            st.markdown(f'<script>window.top.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
-            st.stop()
+            st.rerun()
 
     # Row 1: Main Metrics from first code
     col1, col2, col3, col4 = st.columns(4)
