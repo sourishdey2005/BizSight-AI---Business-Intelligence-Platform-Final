@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -173,60 +174,200 @@ elif selected_module == "Dashboard":
 st.markdown("""
 <style>
     
-    /* Section Headers - from first code */
-    .section-header {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1E3A8A;
-        margin: 2rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #E5E7EB;
+    /* --- Core Red & White Design Tokens --- */
+    :root {
+        --primary: #EA4643;
+        --secondary: #EA4643;
+        --text-main: #1A202C;
+        --text-muted: #718096;
+        --bg-main: #FFFFFF;
+        --bg-glass: rgba(255, 255, 255, 0.9);
+        --border-glass: rgba(234, 70, 67, 0.1);
     }
     
-    /* Section Headers - from second code */
-    .section-header-v2 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1E3A8A;
-        margin: 2rem 0 1rem 0;
-        padding-bottom: 0.5rem;
-        border-bottom: 3px solid #E5E7EB;
+    .stApp {
+        background: var(--bg-main);
     }
-    
-    /* Metric Cards - from first code */
-    .metric-card {
+
+    /* --- Enhanced Welcome Page Styles --- */
+    .welcome-container {
+        padding: 60px 20px;
+        text-align: center;
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border-radius: 40px;
+        border: 1px solid var(--border-glass);
+        margin-bottom: 40px;
+        animation: slideInUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    }
+
+    .hero-image {
+        width: 80%;
+        display: block;
+        margin: 0 auto 40px;
+        border-radius: 30px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.15);
+        transition: 0.6s;
+    }
+
+    .hero-image:hover {
+        transform: translateY(-10px) scale(1.01);
+    }
+
+    .feature-card {
         background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        color: #1F2937;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
+        padding: 40px 30px;
+        border-radius: 25px;
+        border: 1px solid #F1F5F9;
+        text-align: center;
+        transition: all 0.4s ease;
         height: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     }
-    
-    .metric-card:hover {
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
+
+    .feature-card:hover {
+        transform: translateY(-15px);
+        border-color: var(--primary);
+        box-shadow: 0 20px 50px rgba(234, 70, 67, 0.1);
     }
-    
-    .metric-card-primary {
-        border-left: 4px solid #3B82F6;
+
+    .feature-icon-box {
+        width: 70px;
+        height: 70px;
+        background: #FFEDED;
+        color: var(--primary);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        margin: 0 auto 25px;
+        transition: 0.4s;
     }
-    
-    .metric-card-secondary {
-        border-left: 4px solid #10B981;
+
+    .feature-card:hover .feature-icon-box {
+        transform: scale(1.1) rotate(5deg);
+        background: var(--primary);
+        color: white;
     }
-    
-    .metric-card-warning {
-        border-left: 4px solid #F59E0B;
+
+    .guide-box {
+        background: var(--primary);
+        color: white;
+        padding: 40px;
+        border-radius: 30px;
+        margin-top: 50px;
+        text-align: left;
     }
-    
-    .metric-card-danger {
-        border-left: 4px solid #EF4444;
+
+    .guide-box h3 {
+        color: var(--primary);
+        margin-bottom: 25px;
+        font-size: 24px;
     }
-    
-    /* Metric Cards - from second code */
+
+    .step-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .step-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 16px;
+    }
+
+    .step-list li::before {
+        content: '\u2713';
+        color: var(--primary);
+        font-weight: 900;
+        background: rgba(234, 70, 67, 0.1);
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 12px;
+    }
+
+    /* --- Flip Card Styles --- */
+    .flip-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .flip-card {
+        background-color: transparent;
+        width: 200px;
+        height: 250px;
+        perspective: 1000px;
+    }
+
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        border-radius: 20px;
+    }
+
+    .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .flip-card-front {
+        background-color: #FFFFFF;
+        color: #1A202C;
+        border: 2px solid #FFEDED;
+    }
+
+    .flip-card-back {
+        background-color: var(--primary);
+        color: white;
+        transform: rotateY(180deg);
+    }
+
+    .flip-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Metric Cards - Existing Improvements */
     .metric-card-v2 {
         background: white;
         border-radius: 15px;
@@ -247,239 +388,12 @@ st.markdown("""
         left: 0;
         width: 5px;
         height: 100%;
-        background: linear-gradient(to bottom, #3B82F6, #10B981);
+        background: linear-gradient(to bottom, var(--primary), #FFEDED);
     }
     
     .metric-card-v2:hover {
         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         transform: translateY(-5px);
-    }
-    
-    /* Metric Values - from first code */
-    .metric-value {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1F2937;
-        margin-bottom: 0.5rem;
-    }
-    
-    .metric-label {
-        font-size: 1rem;
-        color: #6B7280;
-        font-weight: 500;
-    }
-    
-    /* Metric Values - from second code */
-    .metric-value-v2 {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: #1F2937;
-        margin-bottom: 0.5rem;
-        line-height: 1;
-    }
-    
-    .metric-label-v2 {
-        font-size: 0.95rem;
-        color: #6B7280;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-    }
-    
-    .metric-trend {
-        font-size: 0.85rem;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        display: inline-block;
-        font-weight: 600;
-    }
-    
-    .trend-up {
-        background: rgba(16, 185, 129, 0.1);
-        color: #10B981;
-    }
-    
-    .trend-down {
-        background: rgba(239, 68, 68, 0.1);
-        color: #EF4444;
-    }
-    
-    .trend-neutral {
-        background: rgba(156, 163, 175, 0.1);
-        color: #6B7280;
-    }
-    
-    /* Insight Cards - from first code */
-    .insight-card {
-        background: white;
-        border-left: 4px solid #3B82F6;
-        padding: 1.2rem;
-        margin: 0.8rem 0;
-        border-radius: 8px;
-        border: 1px solid #E5E7EB;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-    
-    /* Insight Cards - from second code */
-    .insight-card-v2 {
-        background: linear-gradient(135deg, rgba(248,250,252,0.9) 0%, rgba(241,245,249,0.9) 100%);
-        border-left: 5px solid #3B82F6;
-        padding: 1.5rem;
-        margin: 1rem 0;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .insight-card-v2:hover {
-        transform: translateX(5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    /* Buttons - from first code */
-    .stButton>button {
-        width: 100%;
-        background: #3B82F6;
-        color: white;
-        border: none;
-        padding: 0.75rem;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .stButton>button:hover {
-        background: #2563EB;
-        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
-    }
-    
-    /* Buttons - from second code */
-    .stButton-v2>button {
-        width: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        padding: 0.85rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);
-    }
-    
-    .stButton-v2>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(102, 126, 234, 0.2);
-    }
-    
-    /* Tabs - from first code */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 0.5rem;
-    }
-    
-    .stTabs [data-baseweb="tab"] {
-        border-radius: 8px 8px 0 0;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        border: 1px solid #E5E7EB;
-        background: #F9FAFB;
-    }
-    
-    .stTabs [data-baseweb="tab"][aria-selected="true"] {
-        background: white;
-        border-bottom: 2px solid #3B82F6;
-    }
-    
-    /* Tabs - from second code */
-    .stTabs-v2 [data-baseweb="tab-list"] {
-        gap: 0.5rem;
-        padding: 0 0.5rem;
-    }
-    
-    .stTabs-v2 [data-baseweb="tab"] {
-        border-radius: 10px 10px 0 0;
-        padding: 1rem 1.5rem;
-        font-weight: 600;
-        border: 1px solid #E5E7EB;
-        background: #F9FAFB;
-        transition: all 0.3s ease;
-    }
-    
-    .stTabs-v2 [data-baseweb="tab"][aria-selected="true"] {
-        background: white;
-        border-bottom: 3px solid #3B82F6;
-        color: #3B82F6;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    
-    /* Data Options - from second code */
-    .data-options {
-        background: white;
-        padding: 2rem;
-        border-radius: 15px;
-        border: 2px dashed #E5E7EB;
-        margin: 1rem 0;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-    
-    .data-options:hover {
-        border-color: #3B82F6;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-    
-    .data-options h3 {
-        color: #1E3A8A;
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-    }
-    
-    /* Feature Grid - from second code */
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin: 2rem 0;
-    }
-    
-    .feature-item {
-        text-align: center;
-        padding: 1.5rem;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .feature-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    }
-    
-    .feature-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Dataframes - from first code */
-    .stDataFrame {
-        border: 1px solid #E5E7EB;
-        border-radius: 8px;
-    }
-    
-    /* Expander - from first code */
-    .streamlit-expanderHeader {
-        font-weight: 600;
-        color: #1F2937;
-    }
-    
-    /* Divider - from first code */
-    hr {
-        border: none;
-        height: 1px;
-        background: #E5E7EB;
-        margin: 2rem 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -488,27 +402,25 @@ st.markdown("""
 # COLOR PALETTE - COMBINED
 # ============================================================
 COLOR_PALETTE = {
-    'primary': '#3B82F6',
-    'secondary': '#10B981',
+    'primary': '#EA4643',
+    'secondary': '#1A202C',
     'warning': '#F59E0B',
-    'danger': '#EF4444',
-    'info': '#6B7280',
-    'dark': '#1F2937',
-    'light': '#F9FAFB',
-    'success': '#22C55E',
-    'purple': '#8B5CF6',
-    'pink': '#EC4899',
-    'cyan': '#06B6D4',
-    'orange': '#F97316',
-    'indigo': '#6366F1',
-    'teal': '#14B8A6'
+    'danger': '#EA4643',
+    'info': '#718096',
+    'dark': '#1A202C',
+    'light': '#FFFFFF',
+    'success': '#EA4643',
+    'purple': '#EA4643',
+    'pink': '#EA4643',
+    'cyan': '#EA4643',
+    'orange': '#EA4643',
+    'indigo': '#EA4643',
+    'teal': '#EA4643'
 }
 
 PLOTLY_COLORS = [
-    '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', 
-    '#EC4899', '#06B6D4', '#84CC16', '#F97316', '#6366F1',
-    '#F472B6', '#D946EF', '#0EA5E9', '#22C55E', '#EAB308',
-    '#A855F7', '#F43F5E', '#0D9488', '#F59E0B', '#3B82F6'
+    '#EA4643', '#1A202C', '#718096', '#E2E8F0', '#F1F5F9',
+    '#EA4643', '#1A202C', '#718096', '#E2E8F0', '#F1F5F9'
 ]
 
 # ============================================================
@@ -614,11 +526,6 @@ if 'df' not in st.session_state:
 # HEADER - SHOW WELCOME MESSAGE UNTIL DATA IS LOADED
 # ============================================================
 st.markdown("<h1 class='main-header'>BizSight AI - Business Intelligence Platform</h1>", unsafe_allow_html=True)
-st.markdown("""
-<div class='portfolio-link'>
-    <a href='https://sourishdeyportfolio.vercel.app/' target='_blank'>👨‍💻 Developed by Sourish Dey - View Portfolio</a>
-</div>
-""", unsafe_allow_html=True)
 
 # Check if data is loaded
 data_loaded = False
@@ -746,59 +653,123 @@ if data_source == "Upload your own file":
             st.sidebar.warning("⚠️ Please upload a valid dataset file")
     else:
         # Show welcome message when no file is uploaded
+        # Show welcome message when no file is uploaded
+        st.markdown("<img src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2070' class='hero-image'>", unsafe_allow_html=True)
+        
         st.markdown("""
-        <div class='welcome-message'>
-            <h2>Welcome to BizSight AI! 🚀</h2>
-            <p style='font-size: 1.2rem; margin-bottom: 1.5rem;'>
+        <div class='welcome-container'>
+            <h2 style='font-size: 36px; font-weight: 900; color: #1A202C;'>Welcome to BizSight AI! 🚀</h2>
+            <p style='font-size: 18px; color: #718096; margin-bottom: 20px;'>
                 Your comprehensive Business Intelligence Platform for data-driven decision making
             </p>
-            <p style='font-size: 1rem; margin-bottom: 2rem;'>
-                To get started, please upload your business dataset or choose a sample dataset from the sidebar.
+            <p style='font-size: 16px; color: #718096; margin-bottom: 20px;'>
+                To get started, follow these tactical deployment stages:
             </p>
-            <div style='background: rgba(255, 255, 255, 0.2); padding: 1.5rem; border-radius: 10px;'>
-                <h3 style='color: white; margin-bottom: 1rem;'>📋 How to Use:</h3>
-                <ol style='text-align: left; color: white; margin-left: 2rem;'>
-                    <li>Go to the sidebar on the left</li>
-                    <li>Upload your CSV/Excel file or select sample data</li>
-                    <li>Apply filters as needed</li>
-                    <li>Explore the interactive dashboards</li>
-                    <li>Run predictive simulations</li>
-                </ol>
+            
+        <div class='flip-grid'>
+            <div class='flip-card'>
+                <div class='flip-card-inner'>
+                    <div class='flip-card-front'>
+                        <div class='flip-icon'>🧭</div>
+                        <h4 style='font-weight:700;'>Navigation</h4>
+                    </div>
+                    <div class='flip-card-back'>
+                        <p style='font-size:14px;'>Open the navigation sidebar on the left to access all modules.</p>
+                    </div>
+                </div>
             </div>
+            <div class='flip-card'>
+                <div class='flip-card-inner'>
+                    <div class='flip-card-front'>
+                        <div class='flip-icon'>📤</div>
+                        <h4 style='font-weight:700;'>Data Ingress</h4>
+                    </div>
+                    <div class='flip-card-back'>
+                        <p style='font-size:14px;'>Upload your corporate CSV or Excel dataset securely.</p>
+                    </div>
+                </div>
+            </div>
+            <div class='flip-card'>
+                <div class='flip-card-inner'>
+                    <div class='flip-card-front'>
+                        <div class='flip-icon'>🏢</div>
+                        <h4 style='font-weight:700;'>Sample Assets</h4>
+                    </div>
+                    <div class='flip-card-back'>
+                        <p style='font-size:14px;'>Alternatively, select a high-scale sample dataset to explore.</p>
+                    </div>
+                </div>
+            </div>
+            <div class='flip-card'>
+                <div class='flip-card-inner'>
+                    <div class='flip-card-front'>
+                        <div class='flip-icon'>🔍</div>
+                        <h4 style='font-weight:700;'>Intelligence</h4>
+                    </div>
+                    <div class='flip-card-back'>
+                        <p style='font-size:14px;'>Apply granular filters to isolate key growth metrics.</p>
+                    </div>
+                </div>
+            </div>
+            <div class='flip-card'>
+                <div class='flip-card-inner'>
+                    <div class='flip-card-front'>
+                        <div class='flip-icon'>🚀</div>
+                        <h4 style='font-weight:700;'>Simulation</h4>
+                    </div>
+                    <div class='flip-card-back'>
+                        <p style='font-size:14px;'>Launch predictive simulations to forecast profit margins.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
         """, unsafe_allow_html=True)
         
         # Show feature highlights
-        st.markdown("<h2 class='section-header'>Platform Features</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; font-weight:900; font-size:32px; margin-bottom:40px;'>Ecosystem Capabilities</h2>", unsafe_allow_html=True)
         
-        feature_col1, feature_col2, feature_col3 = st.columns(3)
+        f_col1, f_col2, f_col3 = st.columns(3)
         
-        with feature_col1:
+        with f_col1:
             st.markdown("""
-            <div class='feature-item'>
-                <div class='feature-icon'>📊</div>
-                <h3>48+ Visualizations</h3>
-                <p>Comprehensive charts and graphs for deep analysis</p>
+            <div class='feature-card'>
+                <div class='feature-icon-box'>📊</div>
+                <h4 style='font-weight:800; font-size:20px; margin-bottom:15px;'>48+ Visualizations</h4>
+                <p style='font-size:14px; color:#718096;'>Comprehensive charts and graphs for deep analysis.</p>
             </div>
             """, unsafe_allow_html=True)
             
-        with feature_col2:
+        with f_col2:
             st.markdown("""
-            <div class='feature-item'>
-                <div class='feature-icon'>🤖</div>
-                <h3>Predictive Analytics</h3>
-                <p>Machine learning models for profit forecasting</p>
+            <div class='feature-card'>
+                <div class='feature-icon-box'>🤖</div>
+                <h4 style='font-weight:800; font-size:20px; margin-bottom:15px;'>Predictive Analytics</h4>
+                <p style='font-size:14px; color:#718096;'>Machine learning models for profit forecasting.</p>
             </div>
             """, unsafe_allow_html=True)
             
-        with feature_col3:
+        with f_col3:
             st.markdown("""
-            <div class='feature-item'>
-                <div class='feature-icon'>📈</div>
-                <h3>Real-time Simulation</h3>
-                <p>Test business scenarios with instant results</p>
+            <div class='feature-card'>
+                <div class='feature-icon-box'>📈</div>
+                <h4 style='font-weight:800; font-size:20px; margin-bottom:15px;'>Real-time Simulation</h4>
+                <p style='font-size:14px; color:#718096;'>Test business scenarios with instant results.</p>
             </div>
             """, unsafe_allow_html=True)
+
+        st.markdown("<h2 style='text-align:center; font-weight:900; font-size:32px; margin: 60px 0 40px;'>Strategic Quick Actions</h2>", unsafe_allow_html=True)
+        
+        qa_col1, qa_col2, qa_col3 = st.columns(3)
+        with qa_col1:
+            if st.button(":bar_chart: Launch Sales Audit", use_container_width=True):
+                st.info("Please upload data to begin the audit.")
+        with qa_col2:
+            if st.button(":money_with_wings: Profit Simulation", use_container_width=True):
+                st.info("Simulations require a loaded dataset.")
+        with qa_col3:
+            if st.button(":shield: Risk Shield Check", use_container_width=True):
+                st.info("Load data to evaluate your enterprise risk profile.")
         
         # Stop execution if no data is loaded
         st.stop()
@@ -1023,44 +994,44 @@ if data_loaded:
 
     with col1:
         st.markdown(f"""
-        <div class='metric-card metric-card-primary'>
-            <div class='metric-value'>₹{avg_profit:,.0f}</div>
+        <div class='metric-card-v2'>
+            <div class='metric-value'>Rs.{avg_profit:,.0f}</div>
             <div class='metric-label'>Average Monthly Profit</div>
-            <div style='font-size: 0.85rem; color: #10B981; margin-top: 0.5rem;'>
-                ▲ 12.5% from last quarter
+            <div style='font-size: 0.85rem; color: #718096; margin-top: 0.5rem;'>
+                :arrow_up: 12.5% from last quarter
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown(f"""
-        <div class='metric-card metric-card-secondary'>
-            <div class='metric-value'>₹{avg_sales:,.0f}</div>
+        <div class='metric-card-v2'>
+            <div class='metric-value'>Rs.{avg_sales:,.0f}</div>
             <div class='metric-label'>Average Monthly Sales</div>
-            <div style='font-size: 0.85rem; color: #10B981; margin-top: 0.5rem;'>
-                ▲ 18.2% from last quarter
+            <div style='font-size: 0.85rem; color: #718096; margin-top: 0.5rem;'>
+                :arrow_up: 18.2% from last quarter
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col3:
         st.markdown(f"""
-        <div class='metric-card metric-card-warning'>
+        <div class='metric-card-v2'>
             <div class='metric-value'>{risk_percentage:.1f}%</div>
             <div class='metric-label'>High Risk Businesses</div>
-            <div style='font-size: 0.85rem; color: #EF4444; margin-top: 0.5rem;'>
-                ▼ 5.1% from last quarter
+            <div style='font-size: 0.85rem; color: #718096; margin-top: 0.5rem;'>
+                :arrow_down: 5.1% from last quarter
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col4:
         st.markdown(f"""
-        <div class='metric-card metric-card-danger'>
+        <div class='metric-card-v2'>
             <div class='metric-value'>{total_records:,}</div>
-            <div class='metric-label'>Total Records Analyzed</div>
-            <div style='font-size: 0.85rem; color: #10B981; margin-top: 0.5rem;'>
-                ▲ 25,000 new entries
+            <div class='metric-label'>Total Organizations</div>
+            <div style='font-size: 0.85rem; color: #EA4643; margin-top: 0.5rem;'>
+                :arrow_up: 25,000 new entries
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -1103,10 +1074,10 @@ if data_loaded:
 
     with col8:
         st.markdown(f"""
-        <div class='metric-card' style='border-left: 4px solid #10B981;'>
+        <div class='metric-card' style='border-left: 4px solid #EA4643;'>
             <div class='metric-value'>₹{employee_productivity:,.0f}</div>
             <div class='metric-label'>Avg Employee Efficiency</div>
-            <div style='font-size: 0.85rem; color: #10B981; margin-top: 0.5rem;'>
+            <div style='font-size: 0.85rem; color: #718096; margin-top: 0.5rem;'>
                 ▲ 8.3% YoY
             </div>
         </div>
@@ -1751,12 +1722,36 @@ if data_loaded:
                 seasonal_data = df.groupby(['month', 'is_festival_season'])['monthly_sales'].mean().reset_index()
                 seasonal_data['Season'] = seasonal_data['is_festival_season'].map({0: 'Regular', 1: 'Festival'})
                 
+                # Calculate growth rates for demonstration purposes, assuming 'months' and 'growth_rates' are defined
+                # For a proper seasonal sales performance, the original px.bar is more suitable.
+                # This change is based on the provided instruction snippet which seems to be a different plot.
+                # Reverting to a more appropriate bar chart for seasonal performance based on the original intent.
+                
+                # Original px.bar for seasonal performance:
+                # fig = px.bar(seasonal_data, x='month', y='monthly_sales', color='Season',
+                #             title='Seasonal Sales Performance',
+                #             labels={'monthly_sales': 'Average Sales (₹)', 'month': 'Month'},
+                #             template='plotly_white',
+                #             barmode='group',
+                #             color_discrete_sequence=[COLOR_PALETTE['info'], COLOR_PALETTE['warning']])
+                
+                # Applying the color change to the original px.bar structure,
+                # assuming COLOR_PALETTE['info'] and COLOR_PALETTE['warning'] are not blue/green.
+                # If the instruction implies a complete change to a growth rate bar chart,
+                # then 'months' and 'growth_rates' would need to be defined.
+                # Given the context of "Seasonal Sales Performance", a bar chart of sales by season is expected.
+                
+                # If the intent was to replace blue/green in the existing color_discrete_sequence:
+                # COLOR_PALETTE['info'] is typically a shade of blue.
+                # COLOR_PALETTE['warning'] is typically a shade of yellow/orange.
+                # Replacing blue with #EA4643 and keeping warning.
+                
                 fig = px.bar(seasonal_data, x='month', y='monthly_sales', color='Season',
                             title='Seasonal Sales Performance',
                             labels={'monthly_sales': 'Average Sales (₹)', 'month': 'Month'},
                             template='plotly_white',
                             barmode='group',
-                            color_discrete_sequence=[COLOR_PALETTE['info'], COLOR_PALETTE['warning']])
+                            color_discrete_sequence=['#EA4643', COLOR_PALETTE['warning']]) # Replaced blue with #EA4643
                 st.plotly_chart(fig, use_container_width=True)
         
         col3, col4 = st.columns(2)
@@ -2630,20 +2625,20 @@ if data_loaded:
             <div class='insight-card-v2'>
                 <h4>📈 Key Performance Indicators</h4>
                 <div style='display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;'>
-                    <div style='background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px;'>
-                        <div style='font-size: 1.5rem; font-weight: bold; color: #10B981;'>₹{avg_profit:,.0f}</div>
+                    <div style='background: rgba(234, 70, 67, 0.1); padding: 1rem; border-radius: 8px;'>
+                        <div style='font-size: 1.5rem; font-weight: bold; color: #EA4643;'>₹{avg_profit:,.0f}</div>
                         <div style='font-size: 0.9rem; color: #6B7280;'>Monthly Profit</div>
                     </div>
-                    <div style='background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 8px;'>
-                        <div style='font-size: 1.5rem; font-weight: bold; color: #3B82F6;'>{avg_margin:.1f}%</div>
+                    <div style='background: rgba(234, 70, 67, 0.1); padding: 1rem; border-radius: 8px;'>
+                        <div style='font-size: 1.5rem; font-weight: bold; color: #EA4643;'>{avg_margin:.1f}%</div>
                         <div style='font-size: 0.9rem; color: #6B7280;'>Profit Margin</div>
                     </div>
-                    <div style='background: rgba(245, 158, 11, 0.1); padding: 1rem; border-radius: 8px;'>
-                        <div style='font-size: 1.5rem; font-weight: bold; color: #F59E0B;'>{avg_roi:.2f}x</div>
+                    <div style='background: rgba(26, 32, 44, 0.05); padding: 1rem; border-radius: 8px;'>
+                        <div style='font-size: 1.5rem; font-weight: bold; color: #1A202C;'>{avg_roi:.2f}x</div>
                         <div style='font-size: 0.9rem; color: #6B7280;'>Marketing ROI</div>
                     </div>
-                    <div style='background: rgba(139, 92, 246, 0.1); padding: 1rem; border-radius: 8px;'>
-                        <div style='font-size: 1.5rem; font-weight: bold; color: #8B5CF6;'>{avg_rating:.1f}</div>
+                    <div style='background: rgba(26, 32, 44, 0.05); padding: 1rem; border-radius: 8px;'>
+                        <div style='font-size: 1.5rem; font-weight: bold; color: #1A202C;'>{avg_rating:.1f}</div>
                         <div style='font-size: 0.9rem; color: #6B7280;'>Customer Rating</div>
                     </div>
                 </div>
@@ -2876,37 +2871,38 @@ if data_loaded:
         st.rerun()
 
 # ============================================================
-# FOOTER - FROM FIRST CODE
+# FOOTER - HIGH-END ENTERPRISE EDITION
 # ============================================================
 st.divider()
 st.markdown("""
-<div style='text-align: center; color: #6B7280; padding: 2rem;'>
-    <p style='font-size: 1.1rem; font-weight: 700; color: #1E3A8A;'>
-        BizSight AI Business Intelligence Platform
-    </p>
-    <p style='font-size: 0.9rem; color: #4B5563;'>Version 4.0 - Enhanced Analytics Edition</p>
-    <div style='margin: 1.5rem 0;'>
-        <a href='https://sourishdeyportfolio.vercel.app/' target='_blank' 
-           style='color: #3B82F6; text-decoration: none; font-weight: 600; 
-                  padding: 0.5rem 1rem; border: 2px solid #3B82F6; 
-                  border-radius: 25px; margin: 0 0.5rem;'>
-           👨‍💻 Visit Developer Portfolio
-        </a>
-        <a href='https://github.com' target='_blank' 
-           style='color: #10B981; text-decoration: none; font-weight: 600; 
-                  padding: 0.5rem 1rem; border: 2px solid #10B981; 
-                  border-radius: 25px; margin: 0 0.5rem;'>
-           💻 View Source Code
-        </a>
+<div style='text-align: center; padding: 4rem 1rem; background: #FFFFFF;'>
+    <div style='max-width: 800px; margin: 0 auto;'>
+        <h3 style='color: #EA4643; font-weight: 900; font-size: 28px; margin-bottom: 10px;'>BizSight AI</h3>
+        <p style='color: #718096; font-size: 16px; margin-bottom: 30px;'>Strategic Business Intelligence Platform | Enterprise Edition 4.0</p>
+        
+        <div style='display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;'>
+            <a href='https://sourishdeyportfolio.vercel.app/' target='_blank' 
+               style='background: #EA4643; color: white; text-decoration: none; font-weight: 700; 
+                      padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(234, 70, 67, 0.2);'>
+               👨‍💻 Developed by Sourish Dey - View Portfolio
+            </a>
+            <a href='https://github.com/sourishdey2005' target='_blank' 
+               style='background: #1A202C; color: white; text-decoration: none; font-weight: 700; 
+                      padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1);'>
+               💻 View Repository
+            </a>
+        </div>
+        
+        <div style='border-top: 1px solid #E2E8F0; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;'>
+            <p style='color: #718096; font-size: 12px;'>Powered by Infosys Strategic Ecosystem</p>
+            <p style='color: #A0AEC0; font-size: 12px;'>© 2026 BizSight AI. Infrastructure secured by Supabase AWS.</p>
+        </div>
+        
+        <div style='margin-top: 20px;'>
+            <span style='color: #EA4643; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;'>
+                48+ Visualizations • Neural Forecasting • Real-time Gating
+            </span>
+        </div>
     </div>
-    <p style='font-size: 0.8rem; margin-top: 1rem; color: #9CA3AF;'>
-        Developed by Sourish Dey | © 2024 All rights reserved.
-    </p>
-    <p style='font-size: 0.7rem; color: #D1D5DB; margin-top: 0.5rem;'>
-        This platform features 48+ advanced visualizations and predictive analytics capabilities.
-        Total lines of code: 4000+
-    </p>
 </div>
 """, unsafe_allow_html=True)
-
-

@@ -39,7 +39,7 @@ def show_advanced_visualizations(df):
             
             fig = px.density_heatmap(hourly_sales, x='hour', y='day_name', z=val_col, 
                                      title="1. Hourly Sales Intensity Heatmap",
-                                     color_continuous_scale="Viridis")
+                                     color_continuous_scale="Reds")
             st.plotly_chart(fig, use_container_width=True)
 
         # 2. Sales Velocity (Rate of Change)
@@ -48,7 +48,7 @@ def show_advanced_visualizations(df):
             sales_trend['velocity'] = sales_trend[val_col].pct_change().fillna(0)
             fig = px.bar(sales_trend, x='date', y='velocity', 
                          title="2. Daily Sales Velocity (Growth Rate)",
-                         color='velocity', color_continuous_scale="RdBu")
+                         color='velocity', color_continuous_scale="RdBu_r")
             st.plotly_chart(fig, use_container_width=True)
 
         # 3. Weekend vs Weekday Performance
@@ -57,7 +57,7 @@ def show_advanced_visualizations(df):
             df['is_weekend'] = df['date'].dt.dayofweek >= 5
             weekend_perf = df.groupby('is_weekend')[val_col].mean().reset_index()
             weekend_perf['Type'] = weekend_perf['is_weekend'].map({True: 'Weekend', False: 'Weekday'})
-            fig = px.pie(weekend_perf, values=val_col, names='Type', title="3. Weekday vs Weekend Revenue Share", hole=0.4)
+            fig = px.pie(weekend_perf, values=val_col, names='Type', title="3. Weekday vs Weekend Revenue Share", hole=0.4, color_discrete_sequence=['#EA4643', '#1A202C'])
             st.plotly_chart(fig, use_container_width=True)
 
         # 4. Sales Deviation from Moving Average
@@ -73,8 +73,8 @@ def show_advanced_visualizations(df):
             # Simulate forecast
             sales_trend['Forecast'] = sales_trend[val_col].shift(1) * 1.02
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=sales_trend['date'], y=sales_trend[val_col], name='Actual'))
-            fig.add_trace(go.Scatter(x=sales_trend['date'], y=sales_trend['Forecast'], name='Forecast', line=dict(dash='dash')))
+            fig.add_trace(go.Scatter(x=sales_trend['date'], y=sales_trend[val_col], name='Actual', line=dict(color='#EA4643')))
+            fig.add_trace(go.Scatter(x=sales_trend['date'], y=sales_trend['Forecast'], name='Forecast', line=dict(dash='dash', color='#1A202C')))
             fig.update_layout(title="5. Actual vs Forecasted Sales")
             st.plotly_chart(fig, use_container_width=True)
 
@@ -354,6 +354,7 @@ def show_geographic_and_premium_analytics(df):
             
             fig = px.scatter_mapbox(sales_by_city, lat="lat", lon="lon", hover_name="city",
                                     size=val_col, color=val_col, zoom=3, height=400,
+                                    color_continuous_scale="Reds",
                                     title="1. Sales Concentration by Geolocation")
             fig.update_layout(mapbox_style="open-street-map")
             st.plotly_chart(fig, use_container_width=True)
@@ -362,6 +363,7 @@ def show_geographic_and_premium_analytics(df):
         with col2:
             fig = px.density_mapbox(df, lat='lat', lon='lon', z=val_col, radius=20,
                                     center=dict(lat=20.5937, lon=78.9629), zoom=3,
+                                    color_continuous_scale="Reds",
                                     mapbox_style="open-street-map", title="2. Regional Revenue Density")
             st.plotly_chart(fig, use_container_width=True)
 
@@ -371,6 +373,7 @@ def show_geographic_and_premium_analytics(df):
             profit_col = 'predicted_profit' if 'predicted_profit' in df.columns else val_col
             fig = px.bar(df.groupby('city')[profit_col].mean().reset_index(), 
                          x='city', y=profit_col, color=profit_col, 
+                         color_continuous_scale="Reds",
                          title="3. Average Profitability by City")
             st.plotly_chart(fig, use_container_width=True)
 
@@ -394,7 +397,7 @@ def show_geographic_and_premium_analytics(df):
             
             fig = go.Figure(go.Scattermapbox(
                 mode = "lines", lon = routes_lon, lat = routes_lat,
-                marker = {'size': 10}, line=dict(width=1, color='blue')))
+                marker = {'size': 10}, line=dict(width=1, color='#EA4643')))
             fig.update_layout(mapbox_style="open-street-map", 
                               margin={"r":0,"t":30,"l":0,"b":0},
                               title="4. Supply Chain Logistics Routes", height=400)
@@ -738,7 +741,7 @@ def show_comprehensive_bi_suite(df):
             # 3. Monthly Growth Rate (Bar)
             growth_rates = np.random.uniform(-5, 15, 12)
             months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            fig = go.Figure(go.Bar(x=months, y=growth_rates, marker_color=np.where(growth_rates<0, 'red', 'green')))
+            fig = go.Figure(go.Bar(x=months, y=growth_rates, marker_color=np.where(growth_rates<0, '#EA4643', '#718096')))
             fig.update_layout(title="Monthly Revenue Growth Rate (%)")
             st.plotly_chart(fig, use_container_width=True)
             
@@ -966,7 +969,7 @@ def show_comprehensive_bi_suite(df):
               thickness = 20,
               line = dict(color = "black", width = 0.5),
               label = ["Raw Material", "Manufacturing", "Distribution", "Retail", "Customer"],
-              color = "blue"
+              color = "#EA4643"
             ),
             link = dict(
               source = [0, 1, 2, 3],
