@@ -30,7 +30,9 @@ async function initAuth() {
         const { data: { session } } = await supabaseClient.auth.getSession();
 
         if (session) {
-            window.location.href = STREAMLIT_URL;
+            const token = session.access_token;
+            const refreshToken = session.refresh_token;
+            window.location.href = `${STREAMLIT_URL}#access_token=${token}&refresh_token=${refreshToken}`;
         }
     } catch (err) {
         console.error("Auth init error:", err);
@@ -81,7 +83,9 @@ if (loginForm) {
                 alert("Login Error: " + error.message);
                 hideLoader();
             } else {
-                window.location.href = STREAMLIT_URL;
+                const token = data.session.access_token;
+                const refreshToken = data.session.refresh_token;
+                window.location.href = `${STREAMLIT_URL}#access_token=${token}&refresh_token=${refreshToken}`;
             }
         } catch (err) {
             alert("Connection error occurred.");

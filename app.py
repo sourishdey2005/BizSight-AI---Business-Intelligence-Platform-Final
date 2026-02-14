@@ -12,6 +12,7 @@ import database
 import modules
 import visualizations
 import time
+import config
 
 warnings.filterwarnings('ignore')
 
@@ -35,8 +36,19 @@ st.set_page_config(
 query_params = st.query_params
 
 if 'user' not in st.session_state or st.session_state.user is None:
-    # Try to get session from Supabase
+    # 1. Try to get token from URL hash (passed from index.html)
+    # Streamlit doesn't natively support reading fragments (#), but we can try query params or JS
+    # For now, we check the query params if they were passed that way, or try get_session
+    
     try:
+        # Check if we were passed a session from the fragment (via JS redirect)
+        # We also look at query params just in case
+        access_token = st.query_params.get("access_token")
+        refresh_token = st.query_params.get("refresh_token")
+        
+        if access_token:
+            database.supabase.auth.set_session(access_token, refresh_token)
+            
         session_response = database.supabase.auth.get_session()
         if session_response and hasattr(session_response, 'user') and session_response.user:
             # Real authenticated user from Supabase
@@ -48,24 +60,46 @@ if 'user' not in st.session_state or st.session_state.user is None:
                 "role": user_data.user_metadata.get('role', 'User') if user_data.user_metadata else 'User'
             }
         else:
-            # Fallback: Create a demo user for testing ONLY
-            # In production, redirect to login page
-            st.warning("⚠️ No active session. Using demo mode. Please log in via the portal for data persistence.")
-            st.session_state.user = {
-                "id": "demo-user-id",
-                "username": "Demo User",
-                "email": "demo@bizsight.ai",
-                "role": "Demo"
-            }
+            # No valid session - REQUIRE LOGIN
+            st.markdown("""
+            <style>
+                .login-required {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    height: 80vh;
+                    text-align: center;
+                }
+                .login-required h1 {
+                    color: #EA4643;
+                    font-size: 48px;
+                    margin-bottom: 20px;
+                }
+                .login-btn {
+                    background: #EA4643;
+                    color: white;
+                    padding: 15px 40px;
+                    border-radius: 50px;
+                    text-decoration: none;
+                    font-weight: 800;
+                    font-size: 18px;
+                    display: inline-block;
+                    margin-top: 30px;
+                }
+            </style>
+            <div class="login-required">
+                <h1>🔒 Authentication Required</h1>
+                <p style="font-size: 20px; color: #64748B;">Please log in to access the BizSight AI Dashboard</p>
+            </div>
+            """, unsafe_allow_html=True)
+            st.info(f"🔗 Login Portal: {config.LOGIN_PORTAL_URL}")
+            st.markdown(f"[👉 Click Here to Login]({config.LOGIN_PORTAL_URL})")
+            st.stop()
     except Exception as e:
-        st.error(f"Authentication Error: {e}")
-        # Fallback to demo mode
-        st.session_state.user = {
-            "id": "demo-user-id",
-            "username": "Demo User",
-            "email": "demo@bizsight.ai",
-            "role": "Demo"
-        }
+        st.error(f"🚨 Authentication Error: {e}")
+        st.markdown(f"[🔙 Return to Login Portal]({config.LOGIN_PORTAL_URL})")
+        st.stop()
 
 database.init_db()
 
@@ -75,8 +109,28 @@ with st.sidebar:
     st.markdown(f"**User:** {st.session_state.user['username']}")
     st.caption(f"**Role:** {st.session_state.user['role']}")
     if st.button("Logout", type="secondary"):
+        try:
+            # Sign out from Supabase
+            database.supabase.auth.sign_out()
+        except:
+            pass
+        
+        # Clear session state
         st.session_state.user = None
-        st.rerun()
+        
+        # Show logout message with redirect link
+        st.success("✅ Logged out successfully!")
+        st.info(f"🔗 Redirecting to login portal...")
+        st.markdown(f"[👉 Click here if not redirected automatically]({config.LOGIN_PORTAL_URL})")
+        
+        # JavaScript redirect (for deployed apps)
+        st.markdown(f"""
+        <meta http-equiv="refresh" content="2;url={config.LOGIN_PORTAL_URL}">
+        <script>
+            window.location.href = "{config.LOGIN_PORTAL_URL}";
+        </script>
+        """, unsafe_allow_html=True)
+        st.stop()
     
     st.markdown("---")
     st.markdown("### 🧭 Navigation")
