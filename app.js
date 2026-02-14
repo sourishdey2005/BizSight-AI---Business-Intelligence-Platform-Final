@@ -2,8 +2,8 @@
 const SUPABASE_URL = "https://kckawsrcgfzterietkht.supabase.co";
 const SUPABASE_KEY = "sb_publishable_9yDAvXAM_AoSgB0wUD2_IQ_-af6ODLr";
 
-// Redirect URL for Streamlit App
-const STREAMLIT_URL = "http://localhost:8501";
+// Redirect URL for Streamlit App (Production)
+const STREAMLIT_URL = "https://bizsight-ai---business-intelligence-platform-sourish.streamlit.app/";
 
 let supabaseClient;
 
