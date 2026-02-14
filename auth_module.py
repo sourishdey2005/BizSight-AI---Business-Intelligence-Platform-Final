@@ -77,13 +77,15 @@ def show_auth_system():
     col1, col2, col3 = st.columns([1, 4, 1])
     
     with col2:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-        
-        # Header Area
-        st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=180)
-        st.markdown('<div class="auth-badge">ENTERPRISE COMMAND CENTER</div>', unsafe_allow_html=True)
-        st.markdown('<div class="auth-header"><h1>BizSight AI</h1></div>', unsafe_allow_html=True)
-        st.markdown('<p style="color: #64748B; margin-bottom: 40px;">Secure Bi-Directional Strategic Handshake</p>', unsafe_allow_html=True)
+        # Header Area - Branding & Identification
+        st.markdown('''
+        <div style="text-align: center; margin-bottom: 40px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" width="180" style="margin-bottom: 20px;">
+            <div style="background: #FFEDED; color: #EA4643; padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; letter-spacing: 2px; display: inline-block; margin-bottom: 20px;">ENTERPRISE COMMAND CENTER</div>
+            <h1 style="background: linear-gradient(90deg, #1A202C, #EA4643); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 42px; font-weight: 900; margin-bottom: 5px;">BizSight AI</h1>
+            <p style="color: #64748B; font-size: 16px;">Secure Bi-Directional Strategic Handshake</p>
+        </div>
+        ''', unsafe_allow_html=True)
 
         tab_login, tab_register = st.tabs(["🔐 SECURE LOGIN", "📝 STRATEGIC JOIN"])
 
@@ -139,7 +141,6 @@ def show_auth_system():
                     else:
                         st.error("⚠️ Mandatory fields cannot be null for security.")
         
-        st.markdown('</div>', unsafe_allow_html=True)
         
         # Footer link back to main site if needed
         st.markdown(f'<p style="text-align: center; margin-top: 30px;"><a href="{config.LOGIN_PORTAL_URL}" style="color: #64748B; text-decoration: none;">← Return to Global Landing Page</a></p>', unsafe_allow_html=True)
