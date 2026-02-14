@@ -13,6 +13,7 @@ import modules
 import visualizations
 import time
 import config
+import auth_module
 
 warnings.filterwarnings('ignore')
 
@@ -29,98 +30,11 @@ st.set_page_config(
 # AUTHENTICATION & NAVIGATION
 # ============================================================
 # ============================================================
-# SESSION & DATA INITIALIZATION WITH REAL SUPABASE AUTH
+# SESSION & GATING (Separate System)
 # ============================================================
 
-def auth_command_center():
-    """Dedicated Separate Auth & Authorization Screen"""
-    st.markdown("""
-    <style>
-        .stApp { 
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFEDED 100%);
-        }
-        .main-auth-card {
-            max-width: 600px;
-            margin: 100px auto;
-            background: white;
-            padding: 50px;
-            border-radius: 40px;
-            box-shadow: 0 50px 100px rgba(234, 70, 67, 0.1);
-            border: 1px solid #FFD6D6;
-            text-align: center;
-        }
-        .auth-logo { width: 180px; margin-bottom: 20px; }
-        .auth-title { font-size: 36px; font-weight: 900; color: #1A202C; margin-bottom: 10px; }
-        .auth-subtitle { color: #718096; margin-bottom: 40px; font-size: 16px; }
-        .stTabs [data-baseweb="tab-list"] { gap: 20px; border-bottom: none; }
-        .stTabs [data-baseweb="tab"] { 
-            background: #F7FAFC; 
-            border-radius: 12px; 
-            padding: 10px 30px; 
-            font-weight: 700;
-        }
-        .stTabs [aria-selected="true"] { 
-            background: #EA4643 !important; 
-            color: white !important; 
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-    with st.container():
-        st.markdown('<div class="main-auth-card">', unsafe_allow_html=True)
-        st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=160)
-        st.markdown('<h1 class="auth-title">BizSight AI Gateway</h1>', unsafe_allow_html=True)
-        st.markdown('<p class="auth-subtitle">Enterprise-Grade Intelligence Access</p>', unsafe_allow_html=True)
-        
-        tab_login, tab_reg = st.tabs(["🔑 LOGIN PORTAL", "📝 REGISTER SYSTEM"])
-        
-        with tab_login:
-            with st.form("auth_login"):
-                email = st.text_input("Strategic ID (Email)")
-                password = st.text_input("Access Key (Password)", type="password")
-                submit = st.form_submit_button("AUTHORIZE & ENTER", type="primary", use_container_width=True)
-                
-                if submit:
-                    user = database.verify_user(email, password)
-                    if user:
-                        st.session_state.user = {
-                            "id": user.id,
-                            "email": user.email,
-                            "username": user.email.split('@')[0].capitalize(),
-                            "role": user.user_metadata.get('role', 'Owner')
-                        }
-                        st.success("✅ Identity Verified. Establishing Secure Link...")
-                        time.sleep(1.5)
-                        st.rerun()
-                    else:
-                        st.error("❌ Authorization Denied. Invalid Credentials.")
-
-        with tab_reg:
-            with st.form("auth_reg"):
-                col1, col2 = st.columns(2)
-                reg_name = col1.text_input("Full Legal Name")
-                reg_email = col2.text_input("Work Email")
-                reg_pass = col1.text_input("Master Key", type="password")
-                reg_biz = col2.text_input("Entity Name (Company)")
-                reg_role = st.selectbox("Strategic Designation", ["Owner", "Director", "Accounting"])
-                
-                reg_submit = st.form_submit_button("PROVISION ACCOUNT", type="primary", use_container_width=True)
-                
-                if reg_submit:
-                    if not reg_email or not reg_pass:
-                        st.warning("⚠️ High-security fields cannot be empty.")
-                    else:
-                        success = database.create_user(reg_email, reg_pass, reg_role, reg_biz, "Enterprise", "Global", "Not Provided", "Not Provided")
-                        if success:
-                            st.success("✅ Enterprise Account Provisioned. Please switch to Login.")
-                        else:
-                            st.error("❌ Provisioning Failed. Entity may already exist.")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# Gating Logic
 if 'user' not in st.session_state or st.session_state.user is None:
-    auth_command_center()
+    auth_module.show_auth_system()
     st.stop()
 
 database.init_db()
