@@ -77,7 +77,7 @@ def show_integrated_auth():
                     else:
                         st.warning("⚠️ Critical security fields missing.")
         
-        st.caption("© 2026 BizSight AI | Part of the Global Enterprise Network")
+        st.caption("© 2026 BizSight AI | Part of the Infosys Limited")
 
 # AUTHENTICATION GATING
 if 'user' not in st.session_state or st.session_state.user is None:
