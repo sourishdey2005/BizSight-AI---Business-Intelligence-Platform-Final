@@ -885,24 +885,6 @@
         </div>
     </section>
 
-    <!-- Security -->
-    <section class="infra" id="security">
-        <h2 style="font-size:42px; font-weight:900;">Fortified Infrastructure.</h2>
-        <div class="infra-grid">
-            <div class="infra-box" data-aos="zoom-in" data-aos-delay="100"><i class="fa-solid fa-fingerprint"></i>
-                <p>SSO Authentication</p>
-            </div>
-            <div class="infra-box" data-aos="zoom-in" data-aos-delay="200"><i class="fa-solid fa-shield-virus"></i>
-                <p>Cloud HSM Security</p>
-            </div>
-            <div class="infra-box" data-aos="zoom-in" data-aos-delay="300"><i class="fa-solid fa-globe"></i>
-                <p>Hybrid Cloud Mesh</p>
-            </div>
-            <div class="infra-box" data-aos="zoom-in" data-aos-delay="400"><i class="fa-solid fa-user-lock"></i>
-                <p>Granular RLS</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Platform Modules Bento -->
     <section class="innovation" id="platform-modules" style="background: #FAFAFA;">
@@ -944,29 +926,6 @@
         </div>
     </section>
 
-    <!-- Global Infrastructure -->
-    <section class="global-strip">
-        <div data-aos="zoom-in">
-            <h2 style="font-size:42px; font-weight:900; margin-bottom:20px;">Deployed on a Global Mesh.</h2>
-            <p style="opacity:0.7; max-width:700px; margin:0 auto; font-size:18px;">BizSight AI operates on
-                decentralized cloud nodes to ensure 99.99% uptime and zero-latency data ingestion from any corner of the
-                world.</p>
-            <div class="grid-3" style="margin-top:60px; border-top:1px solid rgba(255,255,255,0.1); padding-top:40px;">
-                <div>
-                    <h3 style="color:var(--primary); font-size:36px;">140+</h3>
-                    <p style="font-size:12px; font-weight:700; opacity:0.5;">CDN EDGE LOCATIONS</p>
-                </div>
-                <div>
-                    <h3 style="color:var(--primary); font-size:36px;">256-bit</h3>
-                    <p style="font-size:12px; font-weight:700; opacity:0.5;">END-TO-END ENCRYPTION</p>
-                </div>
-                <div>
-                    <h3 style="color:var(--primary); font-size:36px;">SQL+AI</h3>
-                    <p style="font-size:12px; font-weight:700; opacity:0.5;">HYBRID DATA ARCHITECTURE</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Integration Section -->
     <section class="innovation">
@@ -984,32 +943,6 @@
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="faq-section" id="faq">
-        <div class="section-header" style="text-align:center" data-aos="fade-up">
-            <span style="color:var(--primary); font-weight:800; letter-spacing:2px;">KNOWLEDGE BASE</span>
-            <h2 style="font-size:48px; font-weight:900; margin-top:20px;">Common Inquiries</h2>
-        </div>
-        <div class="faq-grid">
-            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')">
-                <div class="faq-question">How secure is my business data? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer">Every byte of data is encrypted using AES-256 both at rest and in transit. We
-                    leverage Supabase's Tier-4 security infrastructure with granular Row Level Security (RLS).</div>
-            </div>
-            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')">
-                <div class="faq-question">Can I manage multiple businesses under one account? <i
-                        class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer">Yes, our Enterprise tier allows you to toggle between different business
-                    profiles and sub-branches instantly from the sidebar.</div>
-            </div>
-            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')">
-                <div class="faq-question">Does the AI required manual training? <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">No. Our models are pre-trained on generic business logic and begin learning your
-                    specific patterns automatically from the moment you log your first 10 transactions.</div>
-            </div>
-        </div>
-    </section>
 
     <!-- Auth Portal -->
     <!-- 1. Global Scale Section -->
@@ -1193,6 +1126,47 @@
                 <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=2070"
                     alt="Cyber Security"
                     style="width:100%; border-radius:40px; box-shadow: 0 40px 100px rgba(0,0,0,0.1);">
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FAQ Section (Common Inquiries) -->
+    <section class="faq-section" id="faq" style="background: white; padding: 120px 8%;">
+        <div class="section-header" style="text-align:center" data-aos="fade-up">
+            <span style="color:var(--primary); font-weight:800; letter-spacing:2px;">KNOWLEDGE BASE</span>
+            <h2 style="font-size:48px; font-weight:900; margin-top:20px;">Common Inquiries</h2>
+        </div>
+        <div class="faq-grid" style="max-width: 900px; margin: 60px auto 0;">
+            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')"
+                style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
+                <div class="faq-question"
+                    style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
+                    How secure is my business data? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"
+                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                    Every byte of data is encrypted using AES-256 both at rest and in transit. We
+                    leverage Supabase's Tier-4 security infrastructure with granular Row Level Security (RLS).</div>
+            </div>
+            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')"
+                style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
+                <div class="faq-question"
+                    style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
+                    Can I manage multiple businesses under one account? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-answer"
+                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                    Yes, our Enterprise tier allows you to toggle between different business
+                    profiles and sub-branches instantly from the sidebar.</div>
+            </div>
+            <div class="faq-item" data-aos="fade-up" onclick="this.classList.toggle('active')"
+                style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
+                <div class="faq-question"
+                    style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
+                    Does the AI require manual training? <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer"
+                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                    No. Our models are pre-trained on generic business logic and begin learning your
+                    specific patterns automatically from the moment you log your first 10 transactions.</div>
             </div>
         </div>
     </section>
