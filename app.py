@@ -42,19 +42,21 @@ database.init_db()
 # Main Navigation
 with st.sidebar:
     # 1. Primary Logout at the very top
-    if st.button("🚪 FULL SYSTEM LOGOUT", type="primary", use_container_width=True, help="Securely sign out and return to the main portal"):
+    if st.button("🚪 LOGOUT & EXIT", type="primary", use_container_width=True, help="Securely sign out and return to the main portal"):
         try:
             database.supabase.auth.sign_out()
         except:
             pass
         st.session_state.clear()
         st.query_params.clear()
-        st.cache_data.clear()
-        st.cache_resource.clear()
         
-        # Immediate redirect to the Vercel base site
-        st.markdown(f'<meta http-equiv="refresh" content="0;url={config.LOGIN_PORTAL_URL}">', unsafe_allow_html=True)
-        st.markdown(f'<script>window.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
+        # Hard redirect for Streamlit Cloud compatibility
+        st.markdown(f"""
+            <meta http-equiv="refresh" content="0; url={config.LOGIN_PORTAL_URL}">
+            <script type="text/javascript">
+                window.top.location.href = "{config.LOGIN_PORTAL_URL}";
+            </script>
+        """, unsafe_allow_html=True)
         st.stop()
 
     st.markdown("---")
@@ -108,6 +110,13 @@ elif selected_module == "Dashboard":
             st.metric("Pending Tasks", "5")
         with col2:
             st.metric("Inventory Alerts", "2", delta="Low Stock", delta_color="inverse")
+        
+        st.markdown("---")
+        if st.button("🚪 Logout from Terminal", type="secondary"):
+            st.session_state.clear()
+            st.query_params.clear()
+            st.markdown(f'<script>window.top.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
+            st.stop()
         st.stop()
 
 # Logic to handle "Data Loading" for the remaining modules (Dashboard, Advanced Analytics)
@@ -1058,7 +1067,15 @@ if data_loaded:
         st.sidebar.info("You are viewing the Advanced Analytics Suite. Other modules are hidden.")
         st.stop()
         
-    st.markdown("<h2 class='section-header'>Executive Dashboard</h2>", unsafe_allow_html=True)
+    header_col1, header_col2 = st.columns([5, 1])
+    with header_col1:
+        st.markdown("<h2 class='section-header'>Executive Dashboard</h2>", unsafe_allow_html=True)
+    with header_col2:
+        if st.button("🚪 Exit System", type="secondary", use_container_width=True):
+            st.session_state.clear()
+            st.query_params.clear()
+            st.markdown(f'<script>window.top.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
+            st.stop()
 
     # Row 1: Main Metrics from first code
     col1, col2, col3, col4 = st.columns(4)
