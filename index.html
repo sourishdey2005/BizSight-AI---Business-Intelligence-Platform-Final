@@ -35,11 +35,43 @@
             font-family: 'Outfit', sans-serif;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section {
+            scroll-margin-top: 100px;
+        }
+
         body {
             background-color: var(--bg-pure);
             color: var(--text-dark);
             overflow-x: hidden;
-            scroll-behavior: smooth;
+        }
+
+        /* --- Back to Top --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 10px 20px rgba(234, 70, 67, 0.3);
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-5px);
+            background: var(--primary-dark);
+            box-shadow: 0 15px 30px rgba(234, 70, 67, 0.5);
         }
 
         /* --- Scroll Progress Bar --- */
@@ -586,6 +618,71 @@
             display: none !important;
         }
 
+        /* --- Flash Cards Section --- */
+        .flash-card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .flash-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 420px;
+        }
+
+        .flash-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--primary);
+            box-shadow: 0 25px 50px rgba(234, 70, 67, 0.1);
+        }
+
+        .flash-card i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 30px;
+            transition: 0.4s;
+        }
+
+        .flash-card:hover i {
+            transform: scale(1.2);
+        }
+
+        .flash-card h4 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .flash-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        @media (max-width: 1200px) {
+            .flash-card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .flash-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (max-width: 1200px) {
 
             .hero,
@@ -619,15 +716,38 @@
         /* --- New Sections CSS --- */
         /* --- Testimonials --- */
         .testimonials {
-            padding: 120px 8%;
+            padding: 120px 0;
             background: var(--bg-pure);
+            overflow: hidden;
         }
 
-        .test-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+        .test-slider-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
             margin-top: 60px;
+        }
+
+        .test-slider {
+            display: flex;
+            gap: 30px;
+            animation: slide-scroll 50s linear infinite;
+            width: max-content;
+            padding: 20px 0;
+        }
+
+        .test-slider:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes slide-scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-50% - 15px));
+            }
         }
 
         .test-card {
@@ -636,6 +756,8 @@
             border-radius: 25px;
             position: relative;
             transition: 0.4s;
+            width: 450px;
+            flex-shrink: 0;
         }
 
         .test-card:hover {
@@ -764,11 +886,169 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* --- FAQ Accordion --- */
+        .faq-answer {
+            display: none;
+            margin-top: 15px;
+            color: var(--text-muted);
+            padding-right: 40px;
+            line-height: 1.7;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block !important;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .faq-item.active .fa-chevron-down {
+            transform: rotate(180deg);
+            color: var(--primary);
+        }
+
+        /* --- Integration Scroll --- */
+        .integration-scroll {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            margin-top: 50px;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .integration-track {
+            display: flex;
+            gap: 80px;
+            animation: logo-scroll 40s linear infinite;
+            width: max-content;
+            align-items: center;
+        }
+
+        .integration-track i {
+            font-size: 45px;
+            color: var(--text-muted);
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .integration-track i:hover {
+            color: var(--primary);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        @keyframes logo-scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* --- Global Shield Floating --- */
+        .global-strip {
+            padding: 120px 8%;
+            position: relative;
+            background: #000;
+            color: white;
+            overflow: hidden;
+        }
+
+        .global-map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .global-map img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.2;
+        }
+
+        .shield-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .infra-float-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 100px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .infra-float-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.5s;
+            animation: float-up 6s ease-in-out infinite alternate;
+        }
+
+        .infra-float-box:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .infra-float-box:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        .infra-float-box:nth-child(4) {
+            animation-delay: 3s;
+        }
+
+        .infra-float-box:hover {
+            background: rgba(234, 70, 67, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-20px);
+        }
+
+        .infra-float-box i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        @keyframes float-up {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="scroll-progress"></div>
+    <button id="back-to-top" title="Go to top"><i class="fa-solid fa-arrow-up"></i></button>
 
     <nav id="navbar">
         <a href="#" class="logo">
@@ -776,7 +1056,7 @@
             <span>BizSight<span>AI</span></span>
         </a>
         <div class="nav-links">
-            <a href="#solutions">Solutions</a>
+            <a href="#platform-modules">Solutions</a>
             <a href="#infrastructure">Infrastructure</a>
             <a href="#pricing">Pricing</a>
             <a href="#security">Privacy</a>
@@ -886,42 +1166,33 @@
     </section>
 
 
-    <!-- Platform Modules Bento -->
     <section class="innovation" id="platform-modules" style="background: #FAFAFA;">
         <span style="color:var(--primary); font-weight:800; letter-spacing:3px;">THE ECOSYSTEM</span>
         <h2 style="font-size:48px; font-weight:900; margin-top:20px;">One Hub. Total Visibility.</h2>
-        <div class="bento-grid" data-aos="fade-up">
-            <div class="bento-item large">
-                <div>
-                    <div class="bento-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                    <h4>AI Financial Command</h4>
-                    <p>Experience a bird's-eye view of your entire fiscal health. Our central dashboard aggregates
-                        real-time sales, expenses, and net profit with predictive trendlines.</p>
-                </div>
-                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000"
-                    style="width:100%; border-radius:20px; margin-top:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"
-                    alt="Dashboard Analytics"
-                    onerror="this.src='https://via.placeholder.com/800x500/EA4643/FFFFFF?text=BizSight+AI+Dashboard'">
+        <div class="flash-card-grid" data-aos="fade-up">
+            <div class="flash-card">
+                <i class="fa-solid fa-chart-line"></i>
+                <h4>AI Financial Command</h4>
+                <p>Experience a bird's-eye view of your entire fiscal health. Our central dashboard aggregates real-time
+                    sales, expenses, and net profit with predictive trendlines.</p>
             </div>
-            <div class="bento-item">
-                <div class="bento-icon"><i class="fa-solid fa-box-open"></i></div>
+            <div class="flash-card">
+                <i class="fa-solid fa-boxes-stacked"></i>
                 <h4>Smart Inventory</h4>
-                <p>Automated stock level tracking with intelligent alerts for replenishable items.</p>
+                <p>Automated stock level tracking with intelligent alerts for replenishable items. Never miss a restock
+                    opportunity.</p>
             </div>
-            <div class="bento-item">
-                <div class="bento-icon"><i class="fa-solid fa-file-invoice"></i></div>
+            <div class="flash-card">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
                 <h4>GST Reports</h4>
-                <p>Generate audit-ready tax reports with one click, tailored for global standards.</p>
+                <p>Generate audit-ready tax reports with one click, tailored for global standards and local compliance.
+                </p>
             </div>
-            <div class="bento-item wide">
-                <div style="display:flex; align-items:center; gap:30px;">
-                    <div style="flex:1">
-                        <h4>Sub-Branch Sync</h4>
-                        <p>Sync multiple physical locations into one digital database instantly. Perfect for retail
-                            chains.</p>
-                    </div>
-                    <div class="bento-icon" style="font-size:60px;"><i class="fa-solid fa-network-wired"></i></div>
-                </div>
+            <div class="flash-card">
+                <i class="fa-solid fa-network-wired"></i>
+                <h4>Sub-Branch Sync</h4>
+                <p>Sync multiple physical locations into one digital database instantly. Perfect for retail chains and
+                    franchises.</p>
             </div>
         </div>
     </section>
@@ -932,13 +1203,33 @@
         <div data-aos="fade-up">
             <span style="color:var(--primary); font-weight:800;">CONNECTIVITY</span>
             <h2 style="font-size:42px; font-weight:900; margin-top:20px;">Integrates with your stack.</h2>
-            <div class="integration-logos">
-                <i class="fa-brands fa-aws"></i>
-                <i class="fa-brands fa-google-cloud"></i>
-                <i class="fa-brands fa-microsoft"></i>
-                <i class="fa-brands fa-stripe"></i>
-                <i class="fa-brands fa-paypal"></i>
-                <i class="fa-brands fa-slack"></i>
+            <div class="integration-scroll">
+                <div class="integration-track">
+                    <!-- Set 1 -->
+                    <i class="fa-brands fa-aws"></i>
+                    <i class="fa-brands fa-google-cloud"></i>
+                    <i class="fa-brands fa-microsoft"></i>
+                    <i class="fa-brands fa-stripe"></i>
+                    <i class="fa-brands fa-paypal"></i>
+                    <i class="fa-brands fa-slack"></i>
+                    <i class="fa-brands fa-salesforce"></i>
+                    <i class="fa-brands fa-apple"></i>
+                    <i class="fa-brands fa-shopify"></i>
+                    <i class="fa-brands fa-github"></i>
+                    <i class="fa-brands fa-dropbox"></i>
+                    <!-- Set 2 (Duplicate for scroll) -->
+                    <i class="fa-brands fa-aws"></i>
+                    <i class="fa-brands fa-google-cloud"></i>
+                    <i class="fa-brands fa-microsoft"></i>
+                    <i class="fa-brands fa-stripe"></i>
+                    <i class="fa-brands fa-paypal"></i>
+                    <i class="fa-brands fa-slack"></i>
+                    <i class="fa-brands fa-salesforce"></i>
+                    <i class="fa-brands fa-apple"></i>
+                    <i class="fa-brands fa-shopify"></i>
+                    <i class="fa-brands fa-github"></i>
+                    <i class="fa-brands fa-dropbox"></i>
+                </div>
             </div>
         </div>
     </section>
@@ -946,79 +1237,180 @@
 
     <!-- Auth Portal -->
     <!-- 1. Global Scale Section -->
+    <!-- Global Scale Section -->
     <section class="global-strip" id="infrastructure">
-        <h2 style="font-size:42px; font-weight:900;" data-aos="fade-up">Global Infrastructure Shield</h2>
-        <div class="global-map" data-aos="zoom-in">
+        <div class="global-map">
             <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80&w=1548"
-                alt="World Map" style="width:100%; border-radius:30px; opacity:0.3;">
+                alt="World Map">
         </div>
-        <div class="infra-grid" style="margin-top:-100px; position:relative; z-index:5;">
-            <div class="infra-box" data-aos="fade-up" data-aos-delay="100">
-                <i class="fa-solid fa-server"></i>
-                <h4>Multi-Region Hub</h4>
-                <p>140+ CDN Edge Proxy Nodes</p>
-            </div>
-            <div class="infra-box" data-aos="fade-up" data-aos-delay="200">
-                <i class="fa-solid fa-shield-halved"></i>
-                <h4>AES-256 Gated</h4>
-                <p>Military Grade Data Vaults</p>
-            </div>
-            <div class="infra-box" data-aos="fade-up" data-aos-delay="300">
-                <i class="fa-solid fa-bolt"></i>
-                <h4>0.5ms Response</h4>
-                <p>Sub-millisecond latency</p>
-            </div>
-            <div class="infra-box" data-aos="fade-up" data-aos-delay="400">
-                <i class="fa-solid fa-cloud"></i>
-                <h4>99.9% Uptime</h4>
-                <p>Enterprise HA Cluster</p>
+        <div class="shield-content">
+            <h2 style="font-size:52px; font-weight:900;" data-aos="fade-up">Global Infrastructure Shield</h2>
+            <p style="opacity:0.7; max-width:700px; margin:20px auto 0; font-size:18px;">BizSight AI operates on a
+                decentralized neural mesh ensuring zero-latency decision making across 6 continents.</p>
+
+            <div class="infra-float-grid">
+                <div class="infra-float-box" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fa-solid fa-server"></i>
+                    <h4>Multi-Region Hub</h4>
+                    <p style="font-size:14px; opacity:0.6;">140+ CDN Edge Proxy Nodes</p>
+                </div>
+                <div class="infra-float-box" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <h4>AES-256 Gated</h4>
+                    <p style="font-size:14px; opacity:0.6;">Military Grade Data Vaults</p>
+                </div>
+                <div class="infra-float-box" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fa-solid fa-bolt"></i>
+                    <h4>0.5ms Response</h4>
+                    <p style="font-size:14px; opacity:0.6;">Sub-millisecond latency</p>
+                </div>
+                <div class="infra-float-box" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fa-solid fa-cloud"></i>
+                    <h4>99.9% Uptime</h4>
+                    <p style="font-size:14px; opacity:0.6;">Enterprise HA Cluster</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- 2. Testimonials -->
     <section class="testimonials">
-        <div style="text-align:center;">
-            <span style="color:var(--primary); font-weight:800; text-transform:uppercase;">Trusted by Leaders</span>
+        <div style="text-align:center; padding: 0 8%;">
+            <span style="color:var(--primary); font-weight:800; text-transform:uppercase;">Trusted by Indian
+                Leaders</span>
             <h2 style="font-size:42px; font-weight:900; margin-top:15px;">Success at the Speed of AI.</h2>
         </div>
-        <div class="test-grid">
-            <div class="test-card" data-aos="fade-right">
-                <i class="fa-solid fa-quote-left"></i>
-                <p>"BizSight AI has transformed our quarterly audit process. What took weeks now takes exactly three
-                    minutes."</p>
-                <div class="test-user">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150"
-                        alt="User">
-                    <div>
-                        <strong>Marcus Thorne</strong>
-                        <p style="font-size:12px; color:var(--text-muted);">CTO, Global Logistics Inc.</p>
+        <div class="test-slider-container">
+            <div class="test-slider">
+                <!-- Original Set -->
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"BizSight AI has transformed our quarterly audit process. What took weeks now takes exactly three
+                        minutes."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150"
+                            alt="Arjun">
+                        <div>
+                            <strong>Arjun Sharma</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">CTO, Delhi Logistics Group</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="test-card" data-aos="fade-up">
-                <i class="fa-solid fa-quote-left"></i>
-                <p>"The predictive inventory alerts alone saved us over $2.4M in potential stock-outs last fiscal year."
-                </p>
-                <div class="test-user">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150"
-                        alt="User">
-                    <div>
-                        <strong>Elena Rodriguez</strong>
-                        <p style="font-size:12px; color:var(--text-muted);">COO, Retail Nexus</p>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"The predictive inventory alerts alone saved us over ₹20 Crores in potential stock-outs last
+                        fiscal year."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150"
+                            alt="Priya">
+                        <div>
+                            <strong>Priya Patel</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">COO, Ahmedabad Retail Hub</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="test-card" data-aos="fade-left">
-                <i class="fa-solid fa-quote-left"></i>
-                <p>"Seamless integration with our existing legacy data. The security posture is the best we've seen in
-                    the BI space."</p>
-                <div class="test-user">
-                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150"
-                        alt="User">
-                    <div>
-                        <strong>David Kim</strong>
-                        <p style="font-size:12px; color:var(--text-muted);">Data Head, FinTech Apex</p>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"Seamless integration with our existing legacy data. The security posture is the best we've seen
+                        in the BI space."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150"
+                            alt="Rajesh">
+                        <div>
+                            <strong>Rajesh Iyer</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">Head of Data, Bangalore FinTech</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"Managing 50+ sub-branches across India became effortless. The real-time visibility is a
+                        game-changer for our scale."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150"
+                            alt="Vikram">
+                        <div>
+                            <strong>Vikram Singh</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">CEO, Hyderabad Enterprise AI</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"The most intuitive BI tool we've used. Our decision-making speed increased by 400% within the
+                        first month."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&q=80&w=150"
+                            alt="Sneha">
+                        <div>
+                            <strong>Sneha Gupta</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">Director of Ops, Mumbai Supply Chain</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Duplicate Set for Infinite Scroll -->
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"BizSight AI has transformed our quarterly audit process. What took weeks now takes exactly three
+                        minutes."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150"
+                            alt="Arjun">
+                        <div>
+                            <strong>Arjun Sharma</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">CTO, Delhi Logistics Group</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"The predictive inventory alerts alone saved us over ₹20 Crores in potential stock-outs last
+                        fiscal year."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150"
+                            alt="Priya">
+                        <div>
+                            <strong>Priya Patel</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">COO, Ahmedabad Retail Hub</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"Seamless integration with our existing legacy data. The security posture is the best we've seen
+                        in the BI space."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150"
+                            alt="Rajesh">
+                        <div>
+                            <strong>Rajesh Iyer</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">Head of Data, Bangalore FinTech</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"Managing 50+ sub-branches across India became effortless. The real-time visibility is a
+                        game-changer for our scale."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150"
+                            alt="Vikram">
+                        <div>
+                            <strong>Vikram Singh</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">CEO, Hyderabad Enterprise AI</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p>"The most intuitive BI tool we've used. Our decision-making speed increased by 400% within the
+                        first month."</p>
+                    <div class="test-user">
+                        <img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&q=80&w=150"
+                            alt="Sneha">
+                        <div>
+                            <strong>Sneha Gupta</strong>
+                            <p style="font-size:12px; color:var(--text-muted);">Director of Ops, Mumbai Supply Chain</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1141,9 +1533,9 @@
                 style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
                 <div class="faq-question"
                     style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
-                    How secure is my business data? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer"
-                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                    How secure is my business data? <i class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                </div>
+                <div class="faq-answer">
                     Every byte of data is encrypted using AES-256 both at rest and in transit. We
                     leverage Supabase's Tier-4 security infrastructure with granular Row Level Security (RLS).</div>
             </div>
@@ -1151,9 +1543,9 @@
                 style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
                 <div class="faq-question"
                     style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
-                    Can I manage multiple businesses under one account? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="faq-answer"
-                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                    Can I manage multiple businesses under one account? <i class="fa-solid fa-chevron-down"
+                        style="transition: 0.3s;"></i></div>
+                <div class="faq-answer">
                     Yes, our Enterprise tier allows you to toggle between different business
                     profiles and sub-branches instantly from the sidebar.</div>
             </div>
@@ -1161,10 +1553,10 @@
                 style="border-bottom: 1px solid var(--border); padding: 30px 0; cursor: pointer;">
                 <div class="faq-question"
                     style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px;">
-                    Does the AI require manual training? <i class="fa-solid fa-chevron-down"></i>
+                    Does the AI require manual training? <i class="fa-solid fa-chevron-down"
+                        style="transition: 0.3s;"></i>
                 </div>
-                <div class="faq-answer"
-                    style="margin-top: 15px; color: var(--text-muted); display: none; padding-right: 40px; line-height: 1.7;">
+                <div class="faq-answer">
                     No. Our models are pre-trained on generic business logic and begin learning your
                     specific patterns automatically from the moment you log your first 10 transactions.</div>
             </div>
@@ -1212,9 +1604,9 @@
             <div class="footer-col">
                 <h4>Company</h4>
                 <ul>
-                    <li><a href="#">Our Vision</a></li>
-                    <li><a href="#">Infrastructure</a></li>
-                    <li><a href="#">Legal</a></li>
+                    <li><a href="#solutions">Our Vision</a></li>
+                    <li><a href="#infrastructure">Infrastructure</a></li>
+                    <li><a href="#security">Legal</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -1250,12 +1642,22 @@
             let scrolled = (winScroll / height) * 100;
             document.getElementById("scroll-progress").style.width = scrolled + "%";
 
-            // Navbar shrink
+            // Navbar shrink \u0026 Back to Top
             if (winScroll > 100) {
                 document.getElementById("navbar").classList.add("scrolled");
             } else {
                 document.getElementById("navbar").classList.remove("scrolled");
             }
+
+            if (winScroll > 500) {
+                document.getElementById("back-to-top").style.display = "block";
+            } else {
+                document.getElementById("back-to-top").style.display = "none";
+            }
+        };
+
+        document.getElementById("back-to-top").onclick = function () {
+            window.scrollTo({ top: 0, behavior: "smooth" });
         };
     </script>
     <!-- Core Logic is now handled by Streamlit -->
