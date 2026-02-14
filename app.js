@@ -32,7 +32,7 @@ async function initAuth() {
         if (session) {
             const token = session.access_token;
             const refreshToken = session.refresh_token;
-            window.location.href = `${STREAMLIT_URL}#access_token=${token}&refresh_token=${refreshToken}`;
+            window.location.href = `${STREAMLIT_URL}?access_token=${token}&refresh_token=${refreshToken}`;
         }
     } catch (err) {
         console.error("Auth init error:", err);
@@ -85,7 +85,7 @@ if (loginForm) {
             } else {
                 const token = data.session.access_token;
                 const refreshToken = data.session.refresh_token;
-                window.location.href = `${STREAMLIT_URL}#access_token=${token}&refresh_token=${refreshToken}`;
+                window.location.href = `${STREAMLIT_URL}?access_token=${token}&refresh_token=${refreshToken}`;
             }
         } catch (err) {
             alert("Connection error occurred.");
