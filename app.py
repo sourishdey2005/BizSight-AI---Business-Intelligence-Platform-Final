@@ -67,6 +67,8 @@ if 'user' not in st.session_state or st.session_state.user is None:
                             "email": user.email,
                             "role": user.user_metadata.get('role', 'Owner') if user.user_metadata else 'Owner'
                         }
+                        # Clear any tokens from URL to prevent reuse
+                        st.query_params.clear()
                         st.success("✅ Access Granted. Synchronizing...")
                         time.sleep(1)
                         st.rerun()
@@ -101,26 +103,32 @@ with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=120)
     st.markdown(f"**User:** {st.session_state.user['username']}")
     st.caption(f"**Role:** {st.session_state.user['role']}")
-    if st.button("Logout", type="secondary"):
+    if st.button("🚪 Full System Logout", type="primary", use_container_width=True):
         try:
             # Sign out from Supabase
             database.supabase.auth.sign_out()
         except:
             pass
         
-        # Clear session state
+        # Clear all state
         st.session_state.user = None
+        st.query_params.clear()
         
-        # Show logout message with redirect link
+        # Clear Streamlit's internal cache to ensure no data leaks
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        
+        # Show logout message and force redirect
         st.success("✅ Logged out successfully!")
-        st.info(f"🔗 Redirecting to login portal...")
-        st.markdown(f"[👉 Click here if not redirected automatically]({config.LOGIN_PORTAL_URL})")
+        st.info("🔗 Returning to Secure Gateway...")
         
-        # JavaScript redirect (for deployed apps)
+        # Redirect back to the auth portal
         st.markdown(f"""
-        <meta http-equiv="refresh" content="2;url={config.LOGIN_PORTAL_URL}">
+        <meta http-equiv="refresh" content="1;url={config.LOGIN_PORTAL_URL}">
         <script>
-            window.location.href = "{config.LOGIN_PORTAL_URL}";
+            setTimeout(function(){{
+                window.location.href = "{config.LOGIN_PORTAL_URL}";
+            }}, 1000);
         </script>
         """, unsafe_allow_html=True)
         st.stop()
