@@ -769,7 +769,7 @@
             <a href="#analysis">AI Engine</a>
             <a href="#security">Security</a>
         </div>
-        <a href="#auth" class="btn-nav btn-portal">Enterprise Login</a>
+        <a href="http://localhost:8501" class="btn-nav btn-portal">Enterprise Login</a>
     </nav>
 
     <!-- Hero -->
@@ -783,7 +783,7 @@
             <p class="hero-desc">Redefine how your enterprise operates. Automated finances, crystal-clear inventory
                 tracking, and predictive scaling—all in one high-performance interface.</p>
             <div class="hero-btns">
-                <button class="btn-action" onclick="document.getElementById('auth').scrollIntoView()">Connect Dashboard
+                <button class="btn-action" onclick="window.location.href='http://localhost:8501'">Connect Dashboard
                     <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
@@ -997,64 +997,22 @@
     </section>
 
     <!-- Auth Portal -->
-    <section class="portal" id="auth">
-        <div class="portal-main">
-            <div class="portal-info" data-aos="fade-right">
-                <h2 style="font-size:52px; font-weight:900; line-height:1.2;">Your Command Center Awaits.</h2>
-                <p style="color:var(--text-muted); font-size:18px; line-height:1.8; margin-top:30px;">Join the elite
-                    tier of enterprises using BizSight to drive global operations with total transparency and AI-backed
-                    security.</p>
-                <div style="margin-top:40px;">
-                    <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-                        <i class="fa-solid fa-circle-check" style="color:var(--primary)"></i>
-                        <span style="font-weight:700;">ISO 27001 Certified Backbone</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <i class="fa-solid fa-circle-check" style="color:var(--primary)"></i>
-                        <span style="font-weight:700;">Ready for Global Expansion</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="portal-card" data-aos="zoom-in">
-                <div class="tab-box">
-                    <button id="login-tab" class="active">Secure Entry</button>
-                    <button id="register-tab">Enterprise Join</button>
-                </div>
-
-                <form id="login-form">
-                    <div class="form-row">
-                        <label>Executive Email</label>
-                        <input type="email" id="login-email" placeholder="name@company.com" required>
-                    </div>
-                    <div class="form-row">
-                        <label>Secure Key</label>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn-action" style="width:100%; justify-content:center">Launch
-                        Dashboard</button>
-                </form>
-
-                <form id="register-form" class="hidden">
-                    <div class="form-row">
-                        <label>Full Name</label>
-                        <input type="text" id="reg-name" required>
-                    </div>
-                    <div class="form-row">
-                        <label>Work Email</label>
-                        <input type="email" id="reg-email" required>
-                    </div>
-                    <div class="form-row">
-                        <label>Corporate Key</label>
-                        <input type="password" id="reg-password" required>
-                    </div>
-                    <div class="form-row">
-                        <label>Company Name</label>
-                        <input type="text" id="reg-biz" required>
-                    </div>
-                    <button type="submit" class="btn-action" style="width:100%; justify-content:center">Create
-                        Account</button>
-                </form>
+    <!-- CTA Section (Replaces Auth Portal) -->
+    <section class="portal" id="access"
+        style="background: linear-gradient(135deg, var(--text-dark) 0%, #000 100%); color: white;">
+        <div class="portal-main" style="text-align: center; padding: 100px 8%;">
+            <div data-aos="zoom-in">
+                <h2 style="font-size:52px; font-weight:900; line-height:1.2; margin-bottom: 30px;">Your Command Center
+                    Awaits.</h2>
+                <p
+                    style="color:rgba(255,255,255,0.7); font-size:18px; line-height:1.8; max-width: 800px; margin: 0 auto 50px;">
+                    Join the elite tier of enterprises using BizSight to drive global operations with total transparency
+                    and AI-backed security.
+                </p>
+                <a href="http://localhost:8501" class="btn-action"
+                    style="padding: 20px 50px; font-size: 18px; display: inline-flex; align-items: center; gap: 15px;">
+                    Launch Enterprise Portal <i class="fa-solid fa-rocket"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -1127,7 +1085,7 @@
             }
         };
     </script>
-    <script src="app.js"></script>
+    <!-- Core Logic is now handled by Streamlit -->
 </body>
 
 </html>
