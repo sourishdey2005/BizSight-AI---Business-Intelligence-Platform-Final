@@ -1,5 +1,5 @@
 # Portal Access Configuration
-LOGIN_PORTAL_URL = "https://yourdomain.com/index.html"  # UPDATE THIS with your deployed index.html URL
+LOGIN_PORTAL_URL = "https://biz-sight-ai-business-intelligence.vercel.app/"  # UPDATE THIS with your deployed index.html URL
 
 # For local testing, you can use:
 # LOGIN_PORTAL_URL = "file:///path/to/your/index.html"
