@@ -13,7 +13,6 @@ import modules
 import visualizations
 import time
 import config
-import auth_module
 
 warnings.filterwarnings('ignore')
 
@@ -27,14 +26,86 @@ st.set_page_config(
 )
 
 # ============================================================
-# AUTHENTICATION & NAVIGATION
 # ============================================================
-# ============================================================
-# SESSION & GATING (Separate System)
+# INTEGRATED AUTH & AUTHORIZATION SYSTEM
 # ============================================================
 
+def show_integrated_auth():
+    """Gated high-end Authentication & Authorization Center"""
+    st.markdown("""
+    <style>
+        [data-testid="stSidebarNav"] {display: none;}
+        .stApp {
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFEDED 100%);
+        }
+        .auth-master-card {
+            background: white;
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 50px 100px rgba(234, 70, 67, 0.1);
+            border: 1px solid #FFD6D6;
+            text-align: center;
+            max-width: 650px;
+            margin: 50px auto;
+        }
+        .stTabs [data-baseweb="tab-list"] { gap: 30px; border-bottom: 2px solid #FFEDED; }
+        .stTabs [data-baseweb="tab"] { font-weight: 800; color: #718096; }
+        .stTabs [aria-selected="true"] { color: #EA4643 !important; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    c1, mid, c2 = st.columns([1, 4, 1])
+    with mid:
+        st.markdown('<div class="auth-master-card">', unsafe_allow_html=True)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=200)
+        st.markdown("<h1 style='color:#1A202C; font-weight:900; font-size:42px;'>BizSight AI</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#718096; font-size:18px; margin-bottom:40px;'>Strategic Business Intelligence Gateway</p>", unsafe_allow_html=True)
+
+        tab_l, tab_r = st.tabs(["🔒 SECURE LOGIN", "📝 ENTERPRISE REGISTRATION"])
+
+        with tab_l:
+            with st.form("main_login"):
+                email = st.text_input("Operational Email ID")
+                password = st.text_input("Access Security Key", type="password")
+                if st.form_submit_button("VALIDATE & ENTER DASHBOARD", type="primary", use_container_width=True):
+                    user = database.verify_user(email, password)
+                    if user:
+                        st.session_state.user = {
+                            "id": user.id,
+                            "email": user.email,
+                            "username": user.email.split('@')[0].capitalize(),
+                            "role": user.user_metadata.get('role', 'Owner')
+                        }
+                        st.success("✅ Credentials Verified. Syncing Digital Ecosystem...")
+                        time.sleep(1.5)
+                        st.rerun()
+                    else:
+                        st.error("❌ Identity Mismatch. Please verify credentials.")
+
+        with tab_r:
+            with st.form("main_register"):
+                r_name = st.text_input("Authorized User Name")
+                r_email = st.text_input("Corporate Email")
+                r_pass = st.text_input("Master Access Key", type="password")
+                r_biz = st.text_input("Legal Entity Name")
+                r_role = st.selectbox("Designation", ["Owner", "Managing Director", "System Accountant"])
+                
+                if st.form_submit_button("PROVISION NEW ACCOUNT", type="primary", use_container_width=True):
+                    if r_email and r_pass:
+                        success = database.create_user(r_email, r_pass, r_role, r_biz, "HQ", "Central", "N/A", "N/A")
+                        if success:
+                            st.success("✅ Enterprise Provisioning Complete. Please Login.")
+                        else:
+                            st.error("❌ Registration Blocked. Contact System Admin.")
+                    else:
+                        st.warning("⚠️ Critical security fields missing.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.caption("© 2026 BizSight AI | Part of the Global Enterprise Network")
+
+# AUTHENTICATION GATING
 if 'user' not in st.session_state or st.session_state.user is None:
-    auth_module.show_auth_system()
+    show_integrated_auth()
     st.stop()
 
 database.init_db()
