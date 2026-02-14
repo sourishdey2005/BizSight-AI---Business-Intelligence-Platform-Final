@@ -100,38 +100,28 @@ database.init_db()
 
 # Main Navigation
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=120)
-    st.markdown(f"**User:** {st.session_state.user['username']}")
-    st.caption(f"**Role:** {st.session_state.user['role']}")
-    if st.button("🚪 Full System Logout", type="primary", use_container_width=True):
+    # 1. Primary Logout at the very top
+    if st.button("🚪 FULL SYSTEM LOGOUT", type="primary", use_container_width=True, help="Securely sign out and return to the main portal"):
         try:
-            # Sign out from Supabase
             database.supabase.auth.sign_out()
         except:
             pass
-        
-        # Clear all state
-        st.session_state.user = None
+        st.session_state.clear()
         st.query_params.clear()
-        
-        # Clear Streamlit's internal cache to ensure no data leaks
         st.cache_data.clear()
         st.cache_resource.clear()
         
-        # Show logout message and force redirect
-        st.success("✅ Logged out successfully!")
-        st.info("🔗 Returning to Secure Gateway...")
-        
-        # Redirect back to the auth portal
-        st.markdown(f"""
-        <meta http-equiv="refresh" content="1;url={config.LOGIN_PORTAL_URL}">
-        <script>
-            setTimeout(function(){{
-                window.location.href = "{config.LOGIN_PORTAL_URL}";
-            }}, 1000);
-        </script>
-        """, unsafe_allow_html=True)
+        # Immediate redirect to the Vercel base site
+        st.markdown(f'<meta http-equiv="refresh" content="0;url={config.LOGIN_PORTAL_URL}">', unsafe_allow_html=True)
+        st.markdown(f'<script>window.location.href = "{config.LOGIN_PORTAL_URL}";</script>', unsafe_allow_html=True)
         st.stop()
+
+    st.markdown("---")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=120)
+    st.markdown(f"**Executive:** {st.session_state.user['username']}")
+    st.caption(f"**Access Level:** {st.session_state.user['role']}")
+    
+    st.markdown("---")
     
     st.markdown("---")
     st.markdown("### 🧭 Navigation")
