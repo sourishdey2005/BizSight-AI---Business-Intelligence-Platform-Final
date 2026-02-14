@@ -32,73 +32,80 @@ st.set_page_config(
 # SESSION & DATA INITIALIZATION WITH REAL SUPABASE AUTH
 # ============================================================
 
-# Check if user is authenticated via query params (passed from HTML portal)
-query_params = st.query_params
-
 if 'user' not in st.session_state or st.session_state.user is None:
-    # 1. Try to get token from URL hash (passed from index.html)
-    # Streamlit doesn't natively support reading fragments (#), but we can try query params or JS
-    # For now, we check the query params if they were passed that way, or try get_session
-    
+    # 1. Try to get token from URL hash (if still coming from portal)
     try:
-        # Check if we were passed a session from the fragment (via JS redirect)
-        # We also look at query params just in case
         access_token = st.query_params.get("access_token")
         refresh_token = st.query_params.get("refresh_token")
-        
         if access_token:
             database.supabase.auth.set_session(access_token, refresh_token)
             
         session_response = database.supabase.auth.get_session()
         if session_response and hasattr(session_response, 'user') and session_response.user:
-            # Real authenticated user from Supabase
             user_data = session_response.user
             st.session_state.user = {
                 "id": user_data.id,
                 "username": user_data.email,
                 "email": user_data.email,
-                "role": user_data.user_metadata.get('role', 'User') if user_data.user_metadata else 'User'
+                "role": user_data.user_metadata.get('role', 'Owner') if user_data.user_metadata else 'Owner'
             }
-        else:
-            # No valid session - REQUIRE LOGIN
-            st.markdown("""
-            <style>
-                .login-required {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    height: 80vh;
-                    text-align: center;
-                }
-                .login-required h1 {
-                    color: #EA4643;
-                    font-size: 48px;
-                    margin-bottom: 20px;
-                }
-                .login-btn {
-                    background: #EA4643;
-                    color: white;
-                    padding: 15px 40px;
-                    border-radius: 50px;
-                    text-decoration: none;
-                    font-weight: 800;
-                    font-size: 18px;
-                    display: inline-block;
-                    margin-top: 30px;
-                }
-            </style>
-            <div class="login-required">
-                <h1>🔒 Authentication Required</h1>
-                <p style="font-size: 20px; color: #64748B;">Please log in to access the BizSight AI Dashboard</p>
-            </div>
-            """, unsafe_allow_html=True)
-            st.info(f"🔗 Login Portal: {config.LOGIN_PORTAL_URL}")
-            st.markdown(f"[👉 Click Here to Login]({config.LOGIN_PORTAL_URL})")
-            st.stop()
+            st.rerun()
+            
+        # 2. Show Native Streamlit Login/Register UI
+        st.markdown("""
+        <style>
+            .stApp { background: #FFFFFF; }
+            .auth-container { max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 40px; box-shadow: 0 40px 100px rgba(234, 70, 67, 0.15); border: 1px solid #FFEDED; background: white; }
+            h1 { color: #EA4643; font-weight: 900; text-align: center; margin-bottom: 30px; }
+            .stButton>button { width: 100%; border-radius: 12px; height: 50px; font-weight: 800; }
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=150)
+        st.title("BizSight AI Command Center")
+        
+        tab1, tab2 = st.tabs(["🔒 Secure Entry", "🚀 Enterprise Join"])
+        
+        with tab1:
+            with st.form("login_form"):
+                email = st.text_input("Executive Email")
+                password = st.text_input("Secure Key", type="password")
+                submit = st.form_submit_button("Launch Dashboard", type="primary")
+                
+                if submit:
+                    user = database.verify_user(email, password)
+                    if user:
+                        st.session_state.user = {
+                            "id": user.id,
+                            "username": user.email,
+                            "email": user.email,
+                            "role": user.user_metadata.get('role', 'Owner') if user.user_metadata else 'Owner'
+                        }
+                        st.success("✅ Access Granted. Synchronizing...")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error("❌ Authentication Failed. Check keys.")
+
+        with tab2:
+            with st.form("register_form"):
+                reg_name = st.text_input("Full Name")
+                reg_email = st.text_input("Work Email")
+                reg_pass = st.text_input("Corporate Key", type="password")
+                reg_biz = st.text_input("Company Name")
+                reg_role = st.selectbox("Strategic Role", ["Owner", "Director", "Accounting"])
+                reg_submit = st.form_submit_button("Create Enterprise Account")
+                
+                if reg_submit:
+                    success = database.create_user(reg_email, reg_pass, reg_role, reg_biz, "Enterprise", "Global", "Not Provided", "Not Provided")
+                    if success:
+                        st.success("✅ Account Provisioned! Use 'Secure Entry' to log in.")
+                    else:
+                        st.error("❌ Registration Error. Email might already exist.")
+        
+        st.stop()
     except Exception as e:
-        st.error(f"🚨 Authentication Error: {e}")
-        st.markdown(f"[🔙 Return to Login Portal]({config.LOGIN_PORTAL_URL})")
+        st.error(f"🚨 Connection Error: {e}")
         st.stop()
 
 database.init_db()
