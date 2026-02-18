@@ -31,6 +31,40 @@ st.set_page_config(
 # INTEGRATED AUTH & AUTHORIZATION SYSTEM
 # ============================================================
 
+def show_footer():
+    """Renders the centralized enterprise footer"""
+    st.divider()
+    st.markdown("""
+    <div style='text-align: center; padding: 2rem 1rem; background: #FFFFFF; border-radius: 20px; margin-top: 40px;'>
+        <div style='max-width: 800px; margin: 0 auto;'>
+            <!-- Action Buttons -->
+            <div style='display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;'>
+                <a href='https://sourishdeyportfolio.vercel.app/' target='_blank' 
+                   style='background: #EA4643; color: white; text-decoration: none; font-weight: 700; 
+                          padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(234, 70, 67, 0.2);'>
+                   👨‍💻 Developed by Sourish Dey - View Portfolio
+                </a>
+                <a href='https://github.com/sourishdey2005' target='_blank' 
+                   style='background: #1A202C; color: white; text-decoration: none; font-weight: 700; 
+                          padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1);'>
+                   💻 View Repository
+                </a>
+            </div>
+            <!-- Corporate Info -->
+            <div style='border-top: 1px solid #E2E8F0; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;'>
+                <p style='color: #718096; font-size: 12px; margin: 5px 0;'>Powered by Infosys Strategic Ecosystem</p>
+                <p style='color: #A0AEC0; font-size: 12px; margin: 5px 0;'>© 2026 BizSight AI. Infrastructure secured by Supabase AWS.</p>
+            </div>
+            <!-- Platform Capabilities -->
+            <div style='margin-top: 20px;'>
+                <span style='color: #EA4643; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;'>
+                    48+ Visualizations • Neural Forecasting • Real-time Gating
+                </span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 def show_integrated_auth():
     """Gated high-end Authentication & Authorization Center"""
     c1, mid, c2 = st.columns([1, 4, 1])
@@ -133,15 +167,19 @@ show_advanced_analytics = False
 
 if selected_module == "Transaction Management":
     modules.data_entry_page()
+    show_footer()
     st.stop()
 elif selected_module == "Inventory Management":
     modules.inventory_page()
+    show_footer()
     st.stop()
 elif selected_module == "Reports":
     modules.reports_page()
+    show_footer()
     st.stop()
 elif selected_module == "Settings":
     modules.admin_page()
+    show_footer()
     st.stop()
 elif selected_module == "Advanced Analytics":
     show_advanced_analytics = True
@@ -162,6 +200,7 @@ elif selected_module == "Dashboard":
             st.session_state.clear()
             st.query_params.clear()
             st.rerun()
+        show_footer()
         st.stop()
 
 # Logic to handle "Data Loading" for the remaining modules (Dashboard, Advanced Analytics)
@@ -2873,36 +2912,5 @@ if data_loaded:
 # ============================================================
 # FOOTER - HIGH-END ENTERPRISE EDITION
 # ============================================================
-st.divider()
-st.markdown("""
-<div style='text-align: center; padding: 4rem 1rem; background: #FFFFFF;'>
-    <div style='max-width: 800px; margin: 0 auto;'>
-        <h3 style='color: #EA4643; font-weight: 900; font-size: 28px; margin-bottom: 10px;'>BizSight AI</h3>
-        <p style='color: #718096; font-size: 16px; margin-bottom: 30px;'>Strategic Business Intelligence Platform | Enterprise Edition 4.0</p>
-        
-        <div style='display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 40px;'>
-            <a href='https://sourishdeyportfolio.vercel.app/' target='_blank' 
-               style='background: #EA4643; color: white; text-decoration: none; font-weight: 700; 
-                      padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(234, 70, 67, 0.2);'>
-               👨‍💻 Developed by Sourish Dey - View Portfolio
-            </a>
-            <a href='https://github.com/sourishdey2005' target='_blank' 
-               style='background: #1A202C; color: white; text-decoration: none; font-weight: 700; 
-                      padding: 15px 35px; border-radius: 15px; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1);'>
-               💻 View Repository
-            </a>
-        </div>
-        
-        <div style='border-top: 1px solid #E2E8F0; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;'>
-            <p style='color: #718096; font-size: 12px;'>Powered by Infosys Strategic Ecosystem</p>
-            <p style='color: #A0AEC0; font-size: 12px;'>© 2026 BizSight AI. Infrastructure secured by Supabase AWS.</p>
-        </div>
-        
-        <div style='margin-top: 20px;'>
-            <span style='color: #EA4643; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;'>
-                48+ Visualizations • Neural Forecasting • Real-time Gating
-            </span>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+show_footer()
+
