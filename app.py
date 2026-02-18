@@ -2883,7 +2883,7 @@ if data_loaded:
         - **Developer**: Sourish Dey
         - **Portfolio**: https://sourishdeyportfolio.vercel.app/
         - **Email**: sourish713321@gmail.com
-        - **GitHub**: https://github.com/sourishdey2005
+        - **GitHub**: https://github.com
         
         ---
         
