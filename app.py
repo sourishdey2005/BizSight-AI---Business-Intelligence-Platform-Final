@@ -12,6 +12,7 @@ import warnings
 import database
 import modules
 import visualizations
+import forecasting_module
 import time
 import config
 
@@ -138,6 +139,12 @@ with st.sidebar:
     st.markdown(f"**Executive:** {st.session_state.user['username']}")
     st.caption(f"**Access Level:** {st.session_state.user['role']}")
     
+    # Connection Status indicator
+    if getattr(database, 'USE_SUPABASE', False):
+        st.sidebar.success("📡 Cloud Engine: Connected")
+    else:
+        st.sidebar.warning("🔌 Local Engine: Offline Mode")
+    
     st.markdown("---")
     
     st.markdown("---")
@@ -147,9 +154,9 @@ with st.sidebar:
     
     # Define available modules based on role (Requested: Dashboard, Transaction Management, Inventory Management, Advanced Analytics, Reports, Settings)
     if user_role == "Owner":
-        options = ["Dashboard", "Transaction Management", "Inventory Management", "Advanced Analytics", "Reports", "Settings"]
+        options = ["Dashboard", "Transaction Management", "Inventory Management", "Advanced Analytics", "Demand Forecasting", "Reports", "Settings"]
     elif user_role == "Accountant":
-        options = ["Dashboard", "Transaction Management", "Inventory Management", "Reports"]
+        options = ["Dashboard", "Transaction Management", "Inventory Management", "Demand Forecasting", "Reports"]
     else: # Staff
         options = ["Dashboard", "Transaction Management", "Inventory Management"]
         
@@ -164,6 +171,7 @@ with st.sidebar:
 # Routing Logic
 # Routing Logic
 show_advanced_analytics = False
+show_demand_forecasting = False
 
 if selected_module == "Transaction Management":
     modules.data_entry_page()
@@ -184,6 +192,9 @@ elif selected_module == "Settings":
 elif selected_module == "Advanced Analytics":
     show_advanced_analytics = True
     # We fall through to load data, but will skip main dashboard rendering
+elif selected_module == "Demand Forecasting":
+    show_demand_forecasting = True
+    # We fall through to load data
 elif selected_module == "Dashboard":
     # If staff/accountant, maybe show specific dashboard?
     if user_role == "Staff":
@@ -519,14 +530,17 @@ DEFAULTS = {
     "employee_efficiency": 50000,
     "marketing_spend": 50000,
     "employee_count": 10,
+    "month": 1,
+    "year": 2024,
+    "monthly_sales": 0
 }
 
 def align_schema(df):
-    """Ensure the dataframe has all required columns"""
+    """Ensure the dataframe has all required columns without dropping existing ones"""
     for col in REQUIRED_COLUMNS:
         if col not in df.columns:
             df[col] = DEFAULTS.get(col, 0)
-    return df[REQUIRED_COLUMNS]
+    return df
 
 # ============================================================
 # SIDEBAR - COMBINED FROM BOTH CODES
@@ -831,10 +845,11 @@ if not data_loaded or df_raw is None or df_raw.empty:
 # Process data from first code
 df = align_schema(df_raw.copy())
 
-# Calculate monthly_sales
-df["monthly_sales"] = (
-    df["avg_daily_footfall"] * df["conversion_rate"] * df["avg_transaction_value"] * 30
-)
+# Calculate monthly_sales ONLY if not present
+if "monthly_sales" not in df.columns or df["monthly_sales"].isna().all():
+    df["monthly_sales"] = (
+        df["avg_daily_footfall"] * df["conversion_rate"] * df["avg_transaction_value"] * 30
+    )
 
 # Add derived metrics from first code
 df["sales_per_sqft"] = df["monthly_sales"] / df["store_size_sqft"].replace(0, 1)
@@ -856,7 +871,7 @@ if 'profit_per_employee' in df_raw.columns:
 
 # Model prediction from first code
 if model:
-    df["predicted_profit"] = model.predict(df)
+    df["predicted_profit"] = model.predict(df[REQUIRED_COLUMNS])
 else:
     # Generate synthetic predictions for demonstration
     np.random.seed(42)
@@ -1017,6 +1032,11 @@ if data_loaded:
         visualizations.show_3d_and_immersive_analytics(df)
         visualizations.show_comprehensive_bi_suite(df)
         st.sidebar.info("You are viewing the Advanced Analytics Suite. Other modules are hidden.")
+        st.stop()
+
+    if show_demand_forecasting:
+        forecasting_module.show_forecasting_section(df)
+        st.sidebar.info("You are viewing Demand Forecasting & Time Series Analysis.")
         st.stop()
         
     header_col1, header_col2 = st.columns([5, 1])

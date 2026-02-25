@@ -11,7 +11,7 @@ import numpy as np
 def data_entry_page():
     st.header("Daily Sales & Expense Logging")
     
-    with st.expander("📝 Add New Transaction", expanded=True):
+    with st.expander(" Add New Transaction", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
             Type = st.selectbox("Transaction Type", ["Sale", "Expense"])
@@ -32,11 +32,11 @@ def data_entry_page():
             
             success = database.add_transaction(user_id, Type, Category, Amount, Description, Date, receipt_data)
             if success:
-                st.success("✅ Transaction Saved to Database!")
+                st.success(" Transaction Saved to Database!")
                 time.sleep(1)
                 st.rerun()
             else:
-                st.error("❌ Failed to save transaction. Please check your connection.")
+                st.error(" Failed to save transaction. Please check your connection.")
 
     # Show Recent Transactions
     st.markdown("### Recent Transactions")
