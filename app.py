@@ -478,6 +478,13 @@ PLOTLY_COLORS = [
 # ============================================================
 @st.cache_resource
 def load_model():
+    # Monkey patch for scikit-learn version compatibility (Fixes _RemainderColsList error)
+    import sklearn.compose._column_transformer
+    if not hasattr(sklearn.compose._column_transformer, '_RemainderColsList'):
+        class _RemainderColsList(list):
+            pass
+        sklearn.compose._column_transformer._RemainderColsList = _RemainderColsList
+
     try:
         model = joblib.load("business_sales_profit_pipeline.pkl")
         return model
