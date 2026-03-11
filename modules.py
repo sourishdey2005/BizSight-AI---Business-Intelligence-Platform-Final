@@ -155,5 +155,5 @@ def admin_page():
     with st.expander("System Health"):
         st.write("Supabase Connection: Online")
         st.write("Infosys AI Engine: Active")
-        st.info("User management is handled through the BizSight AI Portal.")
+        st.info("User management is handled through the Small Business Sales & Profit Analyzer (Bizsight AI) Portal.")
 

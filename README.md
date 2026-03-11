@@ -1,6 +1,18 @@
-# BizSight AI - Enterprise Business Intelligence Platform
+---
+title: Small Business Sales & Profit Analyzer (Bizsight AI)
+emoji: 📊
+colorFrom: red
+colorTo: gray
+sdk: streamlit
+sdk_version: "1.32.0"
+python_version: "3.10"
+app_file: app.py
+pinned: false
+---
 
-![BizSight AI](https://img.shields.io/badge/BizSight-AI%20Powered-EA4643?style=for-the-badge)
+# Small Business Sales & Profit Analyzer (Bizsight AI)
+
+![Small Business Sales & Profit Analyzer (Bizsight AI)](https://img.shields.io/badge/BizsightAI-Powered-EA4643?style=for-the-badge)
 ![Supabase](https://img.shields.io/badge/Supabase-Cloud-3ECF8E?style=for-the-badge&logo=supabase)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)
 
@@ -53,7 +65,7 @@
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/sourishdey2005/BizSight-AI---Business-Intelligence-Platform-Final.git
+git clone https://github.com/sourishdey2005/Small-Business-Sales--Profit-Analyzer-Bizsight-AI.git
 cd BizSight-AI---Business-Intelligence-Platform-Final
 ```
 

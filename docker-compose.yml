@@ -1,0 +1,17 @@
+services:
+  bizsight-ai:
+    build: .
+    container_name: bizsight-platform
+    ports:
+      - "8501:8501"
+    volumes:
+      - bizsight-data:/app/data
+      # Map the local db file to the container for persistence
+      - ./bizsight.db:/app/bizsight.db
+    restart: always
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL:-}
+      - SUPABASE_KEY=${SUPABASE_KEY:-}
+
+volumes:
+  bizsight-data:

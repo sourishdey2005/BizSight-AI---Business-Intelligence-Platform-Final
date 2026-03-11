@@ -22,7 +22,7 @@ warnings.filterwarnings('ignore')
 # PAGE CONFIG
 # ============================================================
 st.set_page_config(
-    page_title="BizSight AI - Business Intelligence Platform",
+    page_title="Small Business Sales & Profit Analyzer (Bizsight AI)",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -54,7 +54,7 @@ def show_footer():
             <!-- Corporate Info -->
             <div style='border-top: 1px solid #E2E8F0; padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;'>
                 <p style='color: #718096; font-size: 12px; margin: 5px 0;'>Powered by Infosys Strategic Ecosystem</p>
-                <p style='color: #A0AEC0; font-size: 12px; margin: 5px 0;'>© 2026 BizSight AI. Infrastructure secured by Supabase AWS.</p>
+                <p style='color: #A0AEC0; font-size: 12px; margin: 5px 0;'>© 2026 Small Business Sales & Profit Analyzer (Bizsight AI). Infrastructure secured by Supabase AWS.</p>
             </div>
             <!-- Platform Capabilities -->
             <div style='margin-top: 20px;'>
@@ -71,7 +71,8 @@ def show_integrated_auth():
     c1, mid, c2 = st.columns([1, 4, 1])
     with mid:
         st.image("https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg", width=200)
-        st.markdown("<h1 style='color:#1A202C; font-weight:900; font-size:42px; text-align:center;'>BizSight AI</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='color:#1A202C; font-weight:900; font-size:42px; text-align:center;'>Small Business Sales & Profit Analyzer</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#EA4643; font-size:18px; font-weight:700; text-align:center; margin-top:-20px;'>(Bizsight AI)</p>", unsafe_allow_html=True)
         st.markdown("<p style='color:#718096; font-size:18px; margin-bottom:40px; text-align:center;'>Strategic Business Intelligence Gateway</p>", unsafe_allow_html=True)
 
         tab_l, tab_r = st.tabs(["🔒 SECURE LOGIN", "📝 ENTERPRISE REGISTRATION"])
@@ -113,7 +114,7 @@ def show_integrated_auth():
                     else:
                         st.warning("⚠️ Critical security fields missing.")
         
-        st.caption("© 2026 BizSight AI | Part of the Infosys Limited")
+        st.caption("© 2026 Small Business Sales & Profit Analyzer (Bizsight AI) | Part of the Infosys Limited")
 
 # AUTHENTICATION GATING
 if 'user' not in st.session_state or st.session_state.user is None:
@@ -585,7 +586,7 @@ if 'df' not in st.session_state:
 # ============================================================
 # HEADER - SHOW WELCOME MESSAGE UNTIL DATA IS LOADED
 # ============================================================
-st.markdown("<h1 class='main-header'>BizSight AI - Business Intelligence Platform</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-header'>Small Business Sales & Profit Analyzer (Bizsight AI)</h1>", unsafe_allow_html=True)
 
 # Check if data is loaded
 data_loaded = False
@@ -697,8 +698,22 @@ def load_data(file=None, sample=False, advanced_sample=False):
             st.error(f"Error loading file: {str(e)}")
             return pd.DataFrame()
     
-    df.fillna(method='ffill', inplace=True)
-    df.fillna(0, inplace=True)
+    # Handle missing values robustly
+    df = df.ffill()
+    
+    # Fill remaining NaNs with 0 only for numeric columns
+    numeric_cols = df.select_dtypes(include=['number']).columns
+    df[numeric_cols] = df[numeric_cols].fillna(0)
+    
+    # Fill remaining NaNs for non-numeric columns
+    for col in df.select_dtypes(exclude=['number']).columns:
+        if df[col].isnull().any():
+            if hasattr(df[col], 'cat'): # Categorical
+                if 'Unknown' not in df[col].cat.categories:
+                    df[col] = df[col].cat.add_categories(['Unknown'])
+                df[col] = df[col].fillna('Unknown')
+            else:
+                df[col] = df[col].fillna('Unknown')
     
     return df
 
