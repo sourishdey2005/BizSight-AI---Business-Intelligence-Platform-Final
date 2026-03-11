@@ -132,6 +132,7 @@ def create_user(email, password, role, business_name, business_type, business_ad
             
     # SQLite Fallback
     try:
+        print(f"Attempting local signup for {email}")
         conn = get_sqlite_conn()
         cursor = conn.cursor()
         cursor.execute("""
@@ -140,26 +141,48 @@ def create_user(email, password, role, business_name, business_type, business_ad
         """, (email, password, role, business_name, business_type, business_address, aadhar, gst))
         conn.commit()
         conn.close()
+        print(f"Local signup success for {email}")
         return True
+    except sqlite3.IntegrityError:
+        print(f"Local signup failed: User {email} already exists.")
+        return False
     except Exception as e:
-        print(f"Local signup failed: {e}")
+        print(f"Local signup failed with error: {e}")
         return False
 
 def add_transaction(user_id, trans_type, category, amount, description, date, receipt_image=None):
-    if USE_SUPABASE:
+    import uuid
+    is_uuid = False
+    try:
+        uuid.UUID(str(user_id))
+        is_uuid = True
+    except ValueError:
+        is_uuid = False
+
+    if USE_SUPABASE and is_uuid:
         try:
             data = {
-                "user_id": user_id,
+                "user_id": str(user_id),
                 "type": trans_type,
                 "category": category,
                 "amount": float(amount),
                 "description": description,
                 "date": str(date)
             }
-            supabase.table("transactions").insert(data).execute()
-            return True
+            # Attempt Supabase insert
+            res = supabase.table("transactions").insert(data).execute()
+            if hasattr(res, 'error') and res.error:
+                 print(f"Supabase transaction error: {res.error}")
+                 # continue to local fallback
+            else:
+                 print(f"Supabase transaction success for user {user_id}")
+                 return True
         except Exception as e:
-            print(f"Supabase transaction failed: {e}")
+            print(f"Supabase transaction exception: {e}")
+            # fall through to SQLite
+    else:
+        if USE_SUPABASE and not is_uuid:
+            print(f"Skipping Supabase for local user ID: {user_id}")
             
     # SQLite Fallback
     try:
@@ -177,10 +200,18 @@ def add_transaction(user_id, trans_type, category, amount, description, date, re
         return False
 
 def get_transactions(user_id):
-    if USE_SUPABASE:
+    import uuid
+    is_uuid = False
+    try:
+        uuid.UUID(str(user_id))
+        is_uuid = True
+    except ValueError:
+        is_uuid = False
+
+    if USE_SUPABASE and is_uuid:
         try:
-            response = supabase.table("transactions").select("*").eq("user_id", user_id).execute()
-            if response.data:
+            response = supabase.table("transactions").select("*").eq("user_id", str(user_id)).execute()
+            if hasattr(response, 'data') and response.data:
                 return pd.DataFrame(response.data)
         except Exception as e:
             print(f"Supabase fetch transactions failed: {e}")
@@ -196,10 +227,18 @@ def get_transactions(user_id):
         return pd.DataFrame()
 
 def add_inventory_item(user_id, item_name, quantity, cost_price, selling_price, category, min_stock):
-    if USE_SUPABASE:
+    import uuid
+    is_uuid = False
+    try:
+        uuid.UUID(str(user_id))
+        is_uuid = True
+    except ValueError:
+        is_uuid = False
+
+    if USE_SUPABASE and is_uuid:
         try:
             data = {
-                "user_id": user_id,
+                "user_id": str(user_id),
                 "item_name": item_name,
                 "quantity": int(quantity),
                 "cost_price": float(cost_price),
@@ -207,10 +246,14 @@ def add_inventory_item(user_id, item_name, quantity, cost_price, selling_price, 
                 "category": category,
                 "min_stock_level": int(min_stock)
             }
-            supabase.table("inventory").insert(data).execute()
-            return True
+            res = supabase.table("inventory").insert(data).execute()
+            if hasattr(res, 'error') and res.error:
+                print(f"Supabase inventory error: {res.error}")
+            else:
+                print(f"Supabase inventory success for user {user_id}")
+                return True
         except Exception as e:
-            print(f"Supabase inventory failed: {e}")
+            print(f"Supabase inventory exception: {e}")
 
     # SQLite Fallback
     try:
@@ -228,14 +271,21 @@ def add_inventory_item(user_id, item_name, quantity, cost_price, selling_price, 
         return False
 
 def get_inventory(user_id):
-    if USE_SUPABASE:
+    import uuid
+    is_uuid = False
+    try:
+        uuid.UUID(str(user_id))
+        is_uuid = True
+    except ValueError:
+        is_uuid = False
+
+    if USE_SUPABASE and is_uuid:
         try:
-            response = supabase.table("inventory").select("*").eq("user_id", user_id).execute()
-            if response.data:
+            response = supabase.table("inventory").select("*").eq("user_id", str(user_id)).execute()
+            if hasattr(response, 'data') and response.data:
                 return pd.DataFrame(response.data)
         except Exception as e:
             print(f"Supabase fetch inventory failed: {e}")
-
     # SQLite Fallback
     try:
         conn = get_sqlite_conn()

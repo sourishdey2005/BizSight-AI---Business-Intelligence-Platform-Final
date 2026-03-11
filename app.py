@@ -18,6 +18,9 @@ import config
 
 warnings.filterwarnings('ignore')
 
+# Initialize Database immediately
+database.init_db()
+
 # ============================================================
 # PAGE CONFIG
 # ============================================================
@@ -106,11 +109,14 @@ def show_integrated_auth():
                 
                 if st.form_submit_button("PROVISION NEW ACCOUNT", type="primary", use_container_width=True):
                     if r_email and r_pass:
-                        success = database.create_user(r_email, r_pass, r_role, r_biz, "HQ", "Central", "N/A", "N/A")
-                        if success:
-                            st.success("✅ Enterprise Provisioning Complete. Please Login.")
-                        else:
-                            st.error("❌ Registration Blocked. Contact System Admin.")
+                        try:
+                            success = database.create_user(r_email, r_pass, r_role, r_biz, "HQ", "Central", "N/A", "N/A")
+                            if success:
+                                st.success("✅ Enterprise Provisioning Complete. Please Login.")
+                            else:
+                                st.error("❌ Registration Blocked. This email might already be registered or there is a database issue.")
+                        except Exception as e:
+                            st.error(f"❌ Registration Error: {str(e)}")
                     else:
                         st.warning("⚠️ Critical security fields missing.")
         
@@ -121,7 +127,7 @@ if 'user' not in st.session_state or st.session_state.user is None:
     show_integrated_auth()
     st.stop()
 
-database.init_db()
+# database.init_db() # Moved to top
 
 # Main Navigation
 with st.sidebar:
@@ -141,10 +147,21 @@ with st.sidebar:
     st.caption(f"**Access Level:** {st.session_state.user['role']}")
     
     # Connection Status indicator
+    import uuid
+    is_cloud_user = False
+    try:
+        uuid.UUID(str(st.session_state.user['id']))
+        is_cloud_user = True
+    except:
+        is_cloud_user = False
+
     if getattr(database, 'USE_SUPABASE', False):
-        st.sidebar.success("📡 Cloud Engine: Connected")
+        if is_cloud_user:
+            st.sidebar.success("📡 Cloud Engine: Connected & Syncing")
+        else:
+            st.sidebar.info("🔌 Engine: Local Mode (Local Account)")
     else:
-        st.sidebar.warning("🔌 Local Engine: Offline Mode")
+        st.sidebar.warning("🔌 Engine: Offline Mode")
     
     st.markdown("---")
     

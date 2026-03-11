@@ -3,7 +3,7 @@ from supabase import create_client
 import sys
 
 SUPABASE_URL = "https://kckawsrcgfzterietkht.supabase.co"
-SUPABASE_KEY = "sb_publishable_9yDAvXAM_AoSgB0wUD2_IQ_-af6ODLr"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtja2F3c3JjZ2Z6dGVyaWV0a2h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNjUyMDAsImV4cCI6MjA4NjY0MTIwMH0.cTIYsaq2SHNx8DC-76Tjw8nFncNpkwWuKo5HEtDMv_g"
 
 try:
     print(f"Testing connection to {SUPABASE_URL}...")
