@@ -1,7 +1,7 @@
 services:
-  bizsight-ai:
+  sales-profit-analyzer:
     build: .
-    container_name: bizsight-platform
+    container_name: sales-profit-analyzer
     ports:
       - "8501:8501"
     volumes:
