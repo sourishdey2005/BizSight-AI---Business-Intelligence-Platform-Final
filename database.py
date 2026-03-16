@@ -8,6 +8,7 @@ from types import SimpleNamespace
 # Supabase Credentials
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kckawsrcgfzterietkht.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtja2F3c3JjZ2Z6dGVyaWV0a2h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwNjUyMDAsImV4cCI6MjA4NjY0MTIwMH0.cTIYsaq2SHNx8DC-76Tjw8nFncNpkwWuKo5HEtDMv_g")
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
 
 # SQLite Database Path
 LOCAL_DB = "bizsight.db"
@@ -16,9 +17,13 @@ LOCAL_DB = "bizsight.db"
 try:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
     USE_SUPABASE = True
+    admin_supabase = None
+    if SUPABASE_SERVICE_ROLE_KEY:
+        admin_supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 except Exception as e:
     print(f"Supabase init failed, falling back to local: {e}")
     USE_SUPABASE = False
+    admin_supabase = None
 
 def get_sqlite_conn():
     conn = sqlite3.connect(LOCAL_DB)
@@ -69,6 +74,16 @@ def init_db():
         category TEXT,
         min_stock_level INTEGER,
         last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS login_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_email TEXT,
+        login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        logout_time TIMESTAMP
     )
     ''')
     
@@ -304,3 +319,161 @@ def test_connection():
         except Exception:
             return False
     return True # Local mode is always "connected"
+
+from datetime import datetime
+
+def log_user_login(email):
+    log_ids = {'local': None, 'sb': None}
+    
+    if USE_SUPABASE:
+        try:
+            data = {"user_email": email}
+            res = supabase.table("login_logs").insert(data).execute()
+            if hasattr(res, 'data') and len(res.data) > 0:
+                log_ids['sb'] = res.data[0]['id']
+        except Exception as e:
+            print(f"Supabase login log failed: {e}")
+            
+    try:
+        conn = get_sqlite_conn()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO login_logs (user_email) VALUES (?)", (email,))
+        log_ids['local'] = cursor.lastrowid
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Local login log failed: {e}")
+        
+    return log_ids
+
+def update_user_activity(log_ids):
+    if not isinstance(log_ids, dict):
+        log_ids = {'local': log_ids, 'sb': None}
+        
+    if USE_SUPABASE and log_ids.get('sb') is not None:
+        try:
+            supabase.table("login_logs").update({"last_active": datetime.utcnow().isoformat()}).eq("id", log_ids['sb']).execute()
+        except:
+            pass
+
+    try:
+        if log_ids.get('local') is not None:
+            conn = get_sqlite_conn()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE login_logs SET last_active = CURRENT_TIMESTAMP WHERE id = ?", (log_ids['local'],))
+            conn.commit()
+            conn.close()
+    except:
+        pass
+
+def log_user_logout(log_ids):
+    if not isinstance(log_ids, dict):
+        log_ids = {'local': log_ids, 'sb': None}
+        
+    if USE_SUPABASE and log_ids.get('sb') is not None:
+        try:
+            supabase.table("login_logs").update({"logout_time": datetime.utcnow().isoformat()}).eq("id", log_ids['sb']).execute()
+        except:
+            pass
+
+    try:
+        if log_ids.get('local') is not None:
+            conn = get_sqlite_conn()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE login_logs SET logout_time = CURRENT_TIMESTAMP WHERE id = ?", (log_ids['local'],))
+            conn.commit()
+            conn.close()
+    except:
+        pass
+
+def get_all_login_logs():
+    if USE_SUPABASE:
+        try:
+            response = supabase.table("login_logs").select("*").execute()
+            if hasattr(response, 'data') and response.data:
+                return pd.DataFrame(response.data)
+        except Exception as e:
+            print(f"Supabase fetch login logs failed: {e}")
+
+    try:
+        conn = get_sqlite_conn()
+        df = pd.read_sql_query("SELECT * FROM login_logs", conn)
+        conn.close()
+        return df
+    except:
+        return pd.DataFrame()
+
+def get_all_users():
+    if USE_SUPABASE:
+        try:
+            # When admin key is available, use it to get exact list from auth
+            if admin_supabase:
+                auth_users = admin_supabase.auth.admin.list_users()
+                if hasattr(auth_users, 'users'):
+                    users_list = []
+                    for user in auth_users.users:
+                        users_list.append({
+                            'id': user.id,
+                            'username': user.email,
+                            'role': user.user_metadata.get('role', 'Owner') if hasattr(user, 'user_metadata') and user.user_metadata else 'Owner',
+                            'business_name': user.user_metadata.get('biz_name', 'Unknown') if hasattr(user, 'user_metadata') and user.user_metadata else 'Unknown',
+                            'created_at': user.created_at
+                        })
+                    if users_list:
+                        return pd.DataFrame(users_list)
+                    
+            # Fallback to profiles table if no admin key
+            response = supabase.table("profiles").select("*").execute()
+            if hasattr(response, 'data') and response.data:
+                df = pd.DataFrame(response.data)
+                # handle renaming based on what's available
+                if 'full_name' in df.columns:
+                    df = df.rename(columns={'full_name': 'username'})
+                return df
+        except Exception as e:
+            print(f"Supabase fetch users failed: {e}")
+
+    try:
+        conn = get_sqlite_conn()
+        df = pd.read_sql_query("SELECT id, username, role, business_name, created_at FROM users", conn)
+        conn.close()
+        return df
+    except:
+        return pd.DataFrame()
+
+def update_user_password(username, new_password):
+    if USE_SUPABASE:
+        if admin_supabase:
+            try:
+                # 1. First get the user's ID using their email
+                auth_users = admin_supabase.auth.admin.list_users()
+                user_id = None
+                if hasattr(auth_users, 'users'):
+                    for user in auth_users.users:
+                        # Assuming 'username' is actually an email since that's what we collect
+                        if user.email == username:
+                            user_id = user.id
+                            break
+                            
+                # 2. Update their password using admin client
+                if user_id:
+                    admin_supabase.auth.admin.update_user_by_id(user_id, {"password": new_password})
+                    print(f"Successfully updated Supabase password for {username}")
+                    return True
+                else:
+                    print(f"Could not find user in Supabase Auth to update password: {username}")
+            except Exception as e:
+                print(f"Failed to update password via Supabase Admin: {e}")
+        else:
+            print("Note: Password reset via Supabase requires SUPABASE_SERVICE_ROLE_KEY environment variable. Cannot update cloud user.")
+
+    # Always attempt local fallback
+    try:
+        conn = get_sqlite_conn()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET password_hash = ? WHERE username = ?", (new_password, username))
+        conn.commit()
+        conn.close()
+        return True
+    except:
+        return False

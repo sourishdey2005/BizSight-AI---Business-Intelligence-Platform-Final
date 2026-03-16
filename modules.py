@@ -146,14 +146,84 @@ def reports_page():
 
 def admin_page():
     st.header("Admin Dashboard")
-    st.write("Manage System Settings.")
     
-    # In Supabase, users are managed in the auth schema, 
-    # but we can show a list of profiles if we had a profiles table.
-    # For now, we'll show system status.
+    if st.session_state.user['role'] != 'Admin' and st.session_state.user['email'] != 'admin':
+        st.error("Access Denied. You do not have permissions to view this page.")
+        return
+        
+    st.write("Manage System Settings, User Logs, and Authentication.")
     
-    with st.expander("System Health"):
+    tab1, tab2, tab3 = st.tabs(["System Health", "User Login Logs", "User Management"])
+    
+    with tab1:
         st.write("Supabase Connection: Online")
         st.write("Infosys AI Engine: Active")
-        st.info("User management is handled through the Small Business Sales & Profit Analyzer (Bizsight AI) Portal.")
+        st.info("System fully operational.")
+        
+    with tab2:
+        st.subheader("User Login Logs")
+        logs_df = database.get_all_login_logs()
+        if not logs_df.empty:
+            logs_df['login_time'] = pd.to_datetime(logs_df['login_time'])
+            logs_df['last_active'] = pd.to_datetime(logs_df['last_active'])
+            logs_df['logout_time'] = pd.to_datetime(logs_df['logout_time'])
+            
+            # Calculate duration
+            # if logout_time is null, use last_active
+            logs_df['end_time'] = logs_df['logout_time'].fillna(logs_df['last_active'])
+            logs_df['duration'] = logs_df['end_time'] - logs_df['login_time']
+            
+            # format duration
+            logs_df['duration_str'] = logs_df['duration'].dt.components.apply(
+                lambda x: f"{int(x.hours)}h {int(x.minutes)}m {int(x.seconds)}s", axis=1
+            )
+            
+            display_df = logs_df[['id', 'user_email', 'login_time', 'logout_time', 'duration_str']].copy()
+            display_df.columns = ['Session ID', 'User Email', 'Login Timestamp', 'Logout Timestamp', 'Session Duration']
+            st.dataframe(display_df, use_container_width=True)
+            
+            # Provide CSV download for Login Logs
+            csv_logs = display_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Download Login Logs as CSV",
+                data=csv_logs,
+                file_name='user_login_logs.csv',
+                mime='text/csv',
+            )
+        else:
+            st.info("No login logs found.")
+            
+    with tab3:
+        st.subheader("Registered Users Directory")
+        users_df = database.get_all_users()
+        if not users_df.empty:
+            st.dataframe(users_df, use_container_width=True)
+            
+            # Provide CSV download for Registered Users
+            csv_users = users_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Download User Directory as CSV",
+                data=csv_users,
+                file_name='registered_users.csv',
+                mime='text/csv',
+            )
+            
+            st.markdown("---")
+            st.subheader("Reset User Password")
+            user_list = users_df['username'].tolist()
+            with st.form("reset_password_form"):
+                selected_user = st.selectbox("Select User", user_list)
+                new_password = st.text_input("New Password", type="password")
+                confirm_password = st.text_input("Confirm New Password", type="password")
+                if st.form_submit_button("Reset Password", type="primary"):
+                    if new_password == confirm_password and new_password:
+                        success = database.update_user_password(selected_user, new_password)
+                        if success:
+                            st.success(f"Password for {selected_user} updated successfully.")
+                        else:
+                            st.error("Failed to update password.")
+                    else:
+                        st.error("Passwords do not match or empty.")
+        else:
+            st.info("No local users found.")
 

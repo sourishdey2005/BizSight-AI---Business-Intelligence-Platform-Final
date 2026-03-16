@@ -85,19 +85,33 @@ def show_integrated_auth():
                 email = st.text_input("Operational Email ID")
                 password = st.text_input("Access Security Key", type="password")
                 if st.form_submit_button("VALIDATE & ENTER DASHBOARD", type="primary", use_container_width=True):
-                    user = database.verify_user(email, password)
-                    if user:
+                    # Hardcoded admin credentials
+                    if email == "admin" and password == "admin@123":
                         st.session_state.user = {
-                            "id": user.id,
-                            "email": user.email,
-                            "username": user.email.split('@')[0].capitalize(),
-                            "role": user.user_metadata.get('role', 'Owner')
+                            "id": "admin_sys",
+                            "email": "admin",
+                            "username": "System Admin",
+                            "role": "Admin"
                         }
-                        st.success("✅ Credentials Verified. Syncing Digital Ecosystem...")
+                        st.session_state.log_id = database.log_user_login(email)
+                        st.success("✅ Admin System Override Granted. Initializing...")
                         time.sleep(1.5)
                         st.rerun()
                     else:
-                        st.error("❌ Identity Mismatch. Please verify credentials.")
+                        user = database.verify_user(email, password)
+                        if user:
+                            st.session_state.user = {
+                                "id": user.id,
+                                "email": user.email,
+                                "username": user.email.split('@')[0].capitalize(),
+                                "role": user.user_metadata.get('role', 'Owner')
+                            }
+                            st.session_state.log_id = database.log_user_login(user.email)
+                            st.success("✅ Credentials Verified. Syncing Digital Ecosystem...")
+                            time.sleep(1.5)
+                            st.rerun()
+                        else:
+                            st.error("❌ Identity Mismatch. Please verify credentials.")
 
         with tab_r:
             with st.form("main_register"):
@@ -133,6 +147,8 @@ if 'user' not in st.session_state or st.session_state.user is None:
 with st.sidebar:
     # 1. Primary Logout at the very top
     if st.button("🚪 LOGOUT", type="primary", use_container_width=True, help="Terminate session and return to login gate"):
+        if 'log_id' in st.session_state and st.session_state.log_id:
+            database.log_user_logout(st.session_state.log_id)
         try:
             database.supabase.auth.sign_out()
         except:
@@ -165,13 +181,17 @@ with st.sidebar:
     
     st.markdown("---")
     
+    # Update activity log on any sidebar interaction
+    if 'log_id' in st.session_state and st.session_state.log_id:
+        database.update_user_activity(st.session_state.log_id)
+        
     st.markdown("---")
     st.markdown("### 🧭 Navigation")
     
     user_role = st.session_state.user['role']
     
     # Define available modules based on role (Requested: Dashboard, Transaction Management, Inventory Management, Advanced Analytics, Reports, Settings)
-    if user_role == "Owner":
+    if user_role == "Owner" or user_role == "Admin":
         options = ["Dashboard", "Transaction Management", "Inventory Management", "Advanced Analytics", "Demand Forecasting", "Reports", "Settings"]
     elif user_role == "Accountant":
         options = ["Dashboard", "Transaction Management", "Inventory Management", "Demand Forecasting", "Reports"]
@@ -182,6 +202,8 @@ with st.sidebar:
 
     st.markdown("---")
     if st.button("🔓 End Session", type="secondary", use_container_width=True):
+        if 'log_id' in st.session_state and st.session_state.log_id:
+            database.log_user_logout(st.session_state.log_id)
         st.session_state.clear()
         st.query_params.clear()
         st.rerun()
@@ -226,6 +248,8 @@ elif selected_module == "Dashboard":
         
         st.markdown("---")
         if st.button("🚪 Terminal Logout", type="secondary"):
+            if 'log_id' in st.session_state and st.session_state.log_id:
+                database.log_user_logout(st.session_state.log_id)
             st.session_state.clear()
             st.query_params.clear()
             st.rerun()
