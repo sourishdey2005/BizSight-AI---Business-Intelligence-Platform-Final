@@ -140,12 +140,13 @@ def create_user(email, password, role, business_name, business_type, business_ad
                 }
             })
             if auth_resp:
-                return True
+                print("Supabase signup successful. Proceeding to replicate locally.")
+                # We do not return True here; we let it fall through to dual-write to SQLite.
         except Exception as e:
             print(f"Supabase signup failed: {e}")
             # Fall through to SQLite
             
-    # SQLite Fallback
+    # SQLite Fallback & Dual-Write
     try:
         print(f"Attempting local signup for {email}")
         conn = get_sqlite_conn()
