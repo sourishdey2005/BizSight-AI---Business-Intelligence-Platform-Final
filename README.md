@@ -211,8 +211,8 @@ This project is licensed under the MIT License.
 **Sourish Dey**  
 Portfolio: [sourishdeyportfolio.vercel.app](https://sourishdeyportfolio.vercel.app/)
 
-presentation link ([https://docs.google.com/presentation/d/1cKNkLeJEO9CKu4LkF01TFv3DPnyXq0Wl/edit?usp=sharing&ouid=106799279081063877345&rtpof=true&sd=true](url))
-
+presentation link 
+https://docs.google.com/presentation/d/1cKNkLeJEO9CKu4LkF01TFv3DPnyXq0Wl/edit?usp=sharing&ouid=106799279081063877345&rtpof=true&sd=true
 
 Built with ❤️ for the next generation of global enterprises.
 
