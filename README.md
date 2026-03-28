@@ -14,6 +14,7 @@ pinned: false
 
 ![Small Business Sales & Profit Analyzer (Bizsight AI)](https://img.shields.io/badge/BizsightAI-Powered-EA4643?style=for-the-badge)
 ![Supabase](https://img.shields.io/badge/Supabase-Cloud-3ECF8E?style=for-the-badge&logo=supabase)
+![ppt](https://docs.google.com/presentation/d/1cKNkLeJEO9CKu4LkF01TFv3DPnyXq0Wl/edit?usp=sharing&ouid=106799279081063877345&rtpof=true&sd=true)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit)
 
 **Next-generation business intelligence platform powered by AI, designed for global enterprises.**
